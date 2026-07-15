@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Murid — SMPIT Nurul Muhajirin Batam</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="sidebar-container"></div>
+
+    <div class="main-content">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div class="topbar-title">
+                    <h1>👥 Data Murid</h1>
+                    <p>Kelola data seluruh murid sekolah</p>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-user">
+                    <div class="user-meta">
+                        <div class="name" id="user-display-name">—</div>
+                        <div class="role" id="user-display-role">—</div>
+                    </div>
+                    <div class="user-avatar" id="user-avatar">A</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="card" style="margin-bottom:20px">
+            <div class="section-header">
+                <div class="section-title">📋 Daftar Murid</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <button class="btn btn-outline btn-sm" onclick="downloadStudentTemplate()">
+                        📥 Download Template Excel
+                    </button>
+                    <label class="btn btn-outline btn-sm" style="cursor:pointer" for="import-excel">
+                        📤 Import Excel
+                    </label>
+                    <input type="file" id="import-excel" accept=".xlsx,.xls" style="display:none" onchange="importExcel(this)">
+                    <button class="btn btn-primary btn-sm" onclick="openAddModal()">
+                        ➕ Tambah Murid
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-bar">
+                <div class="search-input-wrap">
+                    <span class="search-ico">🔍</span>
+                    <input type="text" class="form-control" id="search-input" placeholder="Cari nama, NIS...">
+                </div>
+                <select class="form-control" id="filter-kelas" style="width:auto;min-width:120px">
+                    <option value="">Semua Kelas</option>
+                </select>
+                <select class="form-control" id="filter-gender" style="width:auto;min-width:120px">
+                    <option value="">Semua Jenis Kelamin</option>
+                    <option value="L">Laki-laki</option>
+                    <option value="P">Perempuan</option>
+                </select>
+            </div>
+
+            <!-- Summary -->
+            <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+                <div class="badge badge-blue" id="count-total">Total: 0</div>
+                <div class="badge badge-green" id="count-l">L: 0</div>
+                <div class="badge badge-purple" id="count-p">P: 0</div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nama Murid</th>
+                            <th>NIS</th>
+                            <th>Kelas</th>
+                            <th>Wali Kelas</th>
+                            <th>JK</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="students-tbody">
+                        <tr><td colspan="7" class="text-center text-muted" style="padding:40px">Memuat data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <div class="pagination-info" id="pagination-info">Menampilkan 0 dari 0</div>
+                <div class="pagination-btns" id="pagination-btns"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay" id="modal-student">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">Tambah Murid</h3>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+
+            <form id="student-form" novalidate>
+                <input type="hidden" id="edit-id">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nama Murid <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="f-nama" placeholder="Nama lengkap" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">NIS</label>
+                        <input type="text" class="form-control" id="f-nis" placeholder="Nomor induk siswa">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Kelas <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="f-kelas" placeholder="Contoh: 7A, 8B, 9C" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Jenis Kelamin</label>
+                        <select class="form-control" id="f-gender">
+                            <option value="">Pilih...</option>
+                            <option value="L">Laki-laki</option>
+                            <option value="P">Perempuan</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Wali Kelas <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="f-wali" placeholder="Nama wali kelas" required>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal()">Batal</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save">💾 Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading & Toast -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <p class="loading-text">Memuat...</p>
+    </div>
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/siswa.js"></script>
+</body>
+</html>

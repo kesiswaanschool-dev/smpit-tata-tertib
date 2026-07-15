@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — SMPIT Nurul Muhajirin Batam</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="sidebar-container"></div>
+
+    <div class="main-content">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div class="topbar-title">
+                    <h1>📊 Dashboard</h1>
+                    <p id="dashboard-date">Memuat...</p>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-badge" style="display:flex;align-items:center;gap:6px"><img src="logo.png" alt="Logo" style="width:20px;height:20px;object-fit:contain;border-radius:50%"> SMPIT Nurul Muhajirin</div>
+                <div class="topbar-user">
+                    <div class="user-meta">
+                        <div class="name" id="user-display-name">—</div>
+                        <div class="role" id="user-display-role">—</div>
+                    </div>
+                    <div class="user-avatar" id="user-avatar">A</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stat Cards -->
+        <div class="stat-grid" id="stat-grid">
+            <div class="stat-card blue">
+                <span class="stat-icon">👥</span>
+                <div class="stat-value" id="stat-siswa">—</div>
+                <div class="stat-label">Total Murid</div>
+            </div>
+            <div class="stat-card red">
+                <span class="stat-icon">⚠️</span>
+                <div class="stat-value" id="stat-pelanggaran-bulan">—</div>
+                <div class="stat-label">Pelanggaran Bulan Ini</div>
+            </div>
+            <div class="stat-card green">
+                <span class="stat-icon">🏆</span>
+                <div class="stat-value" id="stat-prestasi-bulan">—</div>
+                <div class="stat-label">Prestasi Bulan Ini</div>
+            </div>
+            <div class="stat-card amber">
+                <span class="stat-icon">📅</span>
+                <div class="stat-value" id="stat-pelanggaran-hari">—</div>
+                <div class="stat-label">Pelanggaran Hari Ini</div>
+            </div>
+        </div>
+
+        <!-- Charts + Top Lists Row -->
+        <div class="grid-2 mb-20" style="margin-bottom:20px">
+            <!-- Weekly Chart -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">📈 Tren Pelanggaran</div>
+                        <div class="card-subtitle">7 hari terakhir</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chart-trend"></canvas>
+                </div>
+            </div>
+
+            <!-- Category Donut -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">🗂️ Kategori Pelanggaran</div>
+                        <div class="card-subtitle">Bulan ini</div>
+                    </div>
+                </div>
+                <div class="chart-container-sm" style="display:flex;align-items:center;justify-content:center">
+                    <canvas id="chart-category" style="max-width:200px"></canvas>
+                </div>
+                <div id="category-legend" style="margin-top:12px;display:flex;flex-direction:column;gap:6px"></div>
+            </div>
+        </div>
+
+        <!-- Top Lists Row -->
+        <div class="grid-2" style="margin-bottom:20px">
+            <!-- Top Violations -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">🔴 Top 5 Pelanggaran</div>
+                    <span class="badge badge-red">Bulan Ini</span>
+                </div>
+                <div id="top-violations-list">
+                    <div class="empty-state" style="padding:24px">
+                        <div class="empty-icon" style="font-size:32px">📊</div>
+                        <p>Memuat data...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Achievements -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">🟢 Top 5 Prestasi</div>
+                    <span class="badge badge-green">Bulan Ini</span>
+                </div>
+                <div id="top-achievements-list">
+                    <div class="empty-state" style="padding:24px">
+                        <div class="empty-icon" style="font-size:32px">📊</div>
+                        <p>Memuat data...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">🕐 Aktivitas Terbaru</div>
+                <div style="display:flex;gap:8px">
+                    <a href="pelanggaran.html" class="btn btn-sm btn-primary">+ Pelanggaran</a>
+                    <a href="prestasi.html" class="btn btn-sm btn-success">+ Prestasi</a>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Waktu</th>
+                            <th>Murid</th>
+                            <th>Kelas</th>
+                            <th>Jenis</th>
+                            <th>Poin</th>
+                            <th>Tipe</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-tbody">
+                        <tr><td colspan="6" class="text-center text-muted" style="padding:32px">Memuat aktivitas...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading & Toast -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <p class="loading-text">Memuat data...</p>
+    </div>
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

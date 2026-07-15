@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — SMPIT Nurul Muhajirin Batam</title>
+    <meta name="description" content="Sistem Catatan Pelanggaran dan Prestasi Murid SMPIT Nurul Muhajirin Batam">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0f1e;
+            color: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated background */
+        .bg-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.12;
+            animation: float 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+        .blob1 { width: 500px; height: 500px; background: #2563eb; top: -200px; left: -200px; animation-delay: 0s; }
+        .blob2 { width: 400px; height: 400px; background: #f59e0b; bottom: -150px; right: -150px; animation-delay: 3s; }
+        .blob3 { width: 300px; height: 300px; background: #10b981; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: 5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.05); }
+        }
+
+        .blob3 { animation-name: float2; }
+        @keyframes float2 {
+            0%, 100% { transform: translate(-50%,-50%) scale(1); }
+            50% { transform: translate(-50%,-50%) scale(1.1); }
+        }
+
+        /* Particles */
+        .particles { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+        .particle {
+            position: absolute;
+            width: 2px; height: 2px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            animation: rise linear infinite;
+        }
+
+        @keyframes rise {
+            from { transform: translateY(100vh); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            to { transform: translateY(-10vh); opacity: 0; }
+        }
+
+        /* Login Card */
+        .login-wrap {
+            width: 100%;
+            max-width: 440px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* School header */
+        .school-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .school-emblem {
+            width: 80px; height: 80px;
+            background: #ffffff;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px;
+            padding: 3px;
+            box-shadow: 0 8px 32px rgba(16, 185, 129, 0.25);
+            position: relative;
+        }
+
+        .school-emblem img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        .school-emblem::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 1px solid rgba(16,185,129,0.3);
+        }
+
+        .school-header h1 {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .school-header p {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        /* Card */
+        .login-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 22px;
+            padding: 32px;
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+        }
+
+        .login-card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .login-card .subtitle {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 28px;
+        }
+
+        .form-group { margin-bottom: 18px; }
+
+        .form-label {
+            display: block;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .input-wrap { position: relative; }
+
+        .input-wrap .input-icon {
+            position: absolute;
+            left: 14px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 17px;
+            color: #475569;
+            pointer-events: none;
+        }
+
+        .input-wrap input {
+            width: 100%;
+            padding: 12px 14px 12px 44px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: #f1f5f9;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.25s ease;
+        }
+
+        .input-wrap input:focus {
+            outline: none;
+            border-color: rgba(37,99,235,0.6);
+            background: rgba(37,99,235,0.06);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+        }
+
+        .input-wrap input::placeholder { color: #475569; }
+
+        .toggle-pass {
+            position: absolute;
+            right: 12px; top: 50%;
+            transform: translateY(-50%);
+            background: none; border: none;
+            color: #475569; cursor: pointer;
+            font-size: 17px; padding: 4px;
+            transition: color 0.2s;
+        }
+        .toggle-pass:hover { color: #94a3b8; }
+
+        .btn-login {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14.5px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 20px rgba(37,99,235,0.4);
+            margin-top: 8px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(37,99,235,0.5); }
+        .btn-login:active { transform: translateY(0); }
+        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .error-msg {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.25);
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: #fca5a5;
+            font-size: 13px;
+            display: none;
+            margin-top: 14px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .error-msg.show { display: flex; }
+
+        /* Footer */
+        .login-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 12px;
+            color: #334155;
+        }
+
+        /* Role info */
+        .role-info {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .role-chip {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .role-chip .chip-icon { font-size: 20px; }
+        .role-chip .chip-label { font-size: 11px; color: #64748b; margin-top: 4px; }
+
+        /* Spinner in button */
+        .btn-spinner {
+            width: 18px; height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: none;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <!-- Background blobs -->
+    <div class="bg-blob blob1"></div>
+    <div class="bg-blob blob2"></div>
+    <div class="bg-blob blob3"></div>
+
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Login Wrapper -->
+    <div class="login-wrap">
+        <div class="school-header">
+            <div class="school-emblem">
+                <img src="logo.png" alt="Logo SMPIT Nurul Muhajirin">
+            </div>
+            <h1>SMPIT Nurul Muhajirin</h1>
+            <p>Sistem Tata Tertib & Prestasi Murid · Batam</p>
+        </div>
+
+        <div class="login-card">
+            <h2>Selamat Datang 👋</h2>
+            <p class="subtitle">Masuk untuk melanjutkan ke sistem</p>
+
+            <form id="login-form" novalidate>
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="username" placeholder="Masukkan username Anda" autocomplete="username" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="password" placeholder="Masukkan password Anda" autocomplete="current-password" required>
+                        <button type="button" class="toggle-pass" id="toggle-pass" title="Tampilkan password">👁️</button>
+                    </div>
+                </div>
+
+                <div class="error-msg" id="error-msg">
+                    <span>❌</span>
+                    <span id="error-text">Username atau password salah.</span>
+                </div>
+
+                <button type="submit" class="btn-login" id="btn-login">
+                    <span class="btn-spinner" id="btn-spinner"></span>
+                    <span id="btn-text">Masuk ke Sistem</span>
+                </button>
+            </form>
+
+            <div class="role-info">
+                <div class="role-chip">
+                    <div class="chip-icon">👑</div>
+                    <div class="chip-label">Admin<br>Akses penuh</div>
+                </div>
+                <div class="role-chip">
+                    <div class="chip-icon">👩‍🏫</div>
+                    <div class="chip-label">Guru<br>Catat pelanggaran &amp; prestasi</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-footer">
+            &copy; 2024 SMPIT Nurul Muhajirin Batam · Sistem Tata Tertib
+        </div>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+
+    <script>
+        // Redirect if already logged in
+        (function() {
+            const session = getSession();
+            if (session) window.location.replace('dashboard.html');
+        })();
+
+        // Create floating particles
+        (function() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDuration = (6 + Math.random() * 10) + 's';
+                p.style.animationDelay = (Math.random() * 10) + 's';
+                p.style.width = p.style.height = (1 + Math.random() * 2) + 'px';
+                p.style.opacity = 0.1 + Math.random() * 0.4;
+                container.appendChild(p);
+            }
+        })();
+
+        // Toggle password visibility
+        document.getElementById('toggle-pass').addEventListener('click', function() {
+            const inp = document.getElementById('password');
+            if (inp.type === 'password') {
+                inp.type = 'text';
+                this.textContent = '🙈';
+            } else {
+                inp.type = 'password';
+                this.textContent = '👁️';
+            }
+        });
+
+        // Login form
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errEl = document.getElementById('error-msg');
+            const spinner = document.getElementById('btn-spinner');
+            const btnText = document.getElementById('btn-text');
+            const btn = document.getElementById('btn-login');
+
+            if (!username || !password) {
+                document.getElementById('error-text').textContent = 'Harap isi username dan password.';
+                errEl.classList.add('show');
+                return;
+            }
+
+            errEl.classList.remove('show');
+            btn.disabled = true;
+            spinner.style.display = 'block';
+            btnText.textContent = 'Memverifikasi...';
+
+            const result = await doLogin(username, password);
+
+            if (result.success) {
+                btnText.textContent = '✅ Berhasil! Mengalihkan...';
+                setTimeout(() => window.location.replace('dashboard.html'), 600);
+            } else {
+                spinner.style.display = 'none';
+                btn.disabled = false;
+                btnText.textContent = 'Masuk ke Sistem';
+                document.getElementById('error-text').textContent = result.error || 'Username atau password salah.';
+                errEl.classList.add('show');
+                document.getElementById('username').focus();
+            }
+        });
+
+        // Enter key focus
+        document.getElementById('username').addEventListener('keydown', e => {
+            if (e.key === 'Enter') document.getElementById('password').focus();
+        });
+    </script>
+</body>
+</html>

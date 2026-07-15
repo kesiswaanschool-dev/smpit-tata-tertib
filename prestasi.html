@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catatan Prestasi — SMPIT Nurul Muhajirin Batam</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="sidebar-container"></div>
+
+    <div class="main-content">
+        <div class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div class="topbar-title">
+                    <h1>🏆 Catatan Prestasi</h1>
+                    <p>Catat prestasi dan pencapaian murid</p>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-user">
+                    <div class="user-meta">
+                        <div class="name" id="user-display-name">—</div>
+                        <div class="role" id="user-display-role">—</div>
+                    </div>
+                    <div class="user-avatar" id="user-avatar">A</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom:20px;align-items:start">
+            <!-- Form Panel -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">🏅 Form Prestasi</div>
+                </div>
+                <!-- Guru recorder info -->
+                <div id="recorder-info" style="
+                    display:flex;align-items:center;gap:10px;
+                    background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.18);
+                    border-radius:10px;padding:10px 14px;margin-bottom:16px">
+                    <span style="font-size:20px">👩‍🏫</span>
+                    <div>
+                        <div style="font-size:11px;color:#34d399;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Dicatat Oleh</div>
+                        <div style="font-size:14px;font-weight:700" id="recorder-name">—</div>
+                    </div>
+                    <div style="margin-left:auto">
+                        <div style="font-size:11px;color:var(--text-muted)" id="recorder-date"></div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info" style="margin-bottom:16px">
+                    ℹ️ Poin prestasi akan mengurangi total poin pelanggaran murid dalam laporan.
+                </div>
+
+                <form id="ach-form" novalidate>
+                    <!-- Student Search -->
+                    <div class="form-group">
+                        <label class="form-label">Cari Murid <span class="required">*</span></label>
+                        <div class="autocomplete-wrap">
+                            <input type="text" class="form-control" id="student-search"
+                                placeholder="Ketik nama murid..." autocomplete="off">
+                            <div class="autocomplete-list" id="student-dropdown"></div>
+                        </div>
+                        <input type="hidden" id="student-id">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Kelas</label>
+                            <input type="text" class="form-control" id="f-kelas" readonly
+                                placeholder="Otomatis" style="background:rgba(255,255,255,0.02)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Wali Kelas</label>
+                            <input type="text" class="form-control" id="f-wali" readonly
+                                placeholder="Otomatis" style="background:rgba(255,255,255,0.02)">
+                        </div>
+                    </div>
+
+                    <!-- Achievement Type (dropdown from Settings) -->
+                    <div class="form-group">
+                        <label class="form-label">Jenis Prestasi <span class="required">*</span></label>
+                        <select class="form-control" id="f-type" onchange="onAchTypeChange()">
+                            <option value="">-- Pilih Jenis Prestasi --</option>
+                        </select>
+                    </div>
+
+                    <!-- Score and Category -->
+                    <div class="form-row-3" style="display:grid; grid-template-columns: 1.5fr 1fr 1.2fr; gap: 12px;">
+                        <div class="form-group">
+                            <label class="form-label">Kategori</label>
+                            <input type="text" class="form-control" id="f-category" readonly
+                                placeholder="Otomatis" style="background:rgba(255,255,255,0.02)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Poin <span class="required">*</span></label>
+                            <input type="number" class="form-control" id="f-score" min="1" placeholder="0" readonly style="background:rgba(255,255,255,0.02)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tanggal <span class="required">*</span></label>
+                            <input type="date" class="form-control" id="f-date">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Keterangan</label>
+                        <textarea class="form-control" id="f-notes" rows="3"
+                            placeholder="Detail prestasi (opsional)..."></textarea>
+                    </div>
+
+                    <!-- Preview -->
+                    <div id="student-preview" style="display:none;
+                        background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);
+                        border-radius:10px;padding:12px;margin-bottom:16px">
+                        <div style="font-size:12px;color:#34d399;margin-bottom:4px;font-weight:600">✓ Murid Dipilih:</div>
+                        <div style="font-size:14px;font-weight:700" id="preview-name">—</div>
+                        <div style="font-size:12px;color:var(--text-muted)" id="preview-class">—</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success" style="width:100%" id="btn-submit">
+                        🏆 Catat Prestasi
+                    </button>
+                </form>
+            </div>
+
+            <!-- Recent achievements -->
+            <div style="display:flex;flex-direction:column;gap:16px">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">⭐ Prestasi Terbaru</div>
+                        <span class="badge badge-green" id="today-count">0 hari ini</span>
+                    </div>
+                    <div id="recent-list">
+                        <div class="empty-state" style="padding:24px">
+                            <div class="empty-icon" style="font-size:32px">🏆</div>
+                            <p>Belum ada prestasi dicatat</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Table -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">📋 Riwayat Prestasi</div>
+                <button class="btn btn-outline btn-sm" onclick="exportAchievements()">📥 Export Excel</button>
+            </div>
+
+            <div class="filters-bar">
+                <div class="search-input-wrap">
+                    <span class="search-ico">🔍</span>
+                    <input type="text" class="form-control" id="hist-search" placeholder="Cari nama murid...">
+                </div>
+                <select class="form-control" id="hist-kelas" style="width:auto;min-width:110px">
+                    <option value="">Semua Kelas</option>
+                </select>
+                <select class="form-control" id="hist-cat" style="width:auto;min-width:140px">
+                    <option value="">Semua Kategori</option>
+                </select>
+                <input type="date" class="form-control" id="hist-date-from" style="width:auto">
+                <input type="date" class="form-control" id="hist-date-to" style="width:auto">
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tanggal</th>
+                            <th>Nama Murid</th>
+                            <th>Kelas</th>
+                            <th>Jenis Prestasi</th>
+                            <th>Kategori</th>
+                            <th>Poin</th>
+                            <th>Keterangan</th>
+                            <th>Dicatat Oleh</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-tbody">
+                        <tr><td colspan="10" class="text-center text-muted" style="padding:40px">Memuat...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <div class="pagination-info" id="hist-info">—</div>
+                <div class="pagination-btns" id="hist-btns"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <p class="loading-text">Menyimpan...</p>
+    </div>
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/prestasi.js"></script>
+</body>
+</html>

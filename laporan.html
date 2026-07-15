@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan — SMPIT Nurul Muhajirin Batam</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="sidebar-container"></div>
+
+    <div class="main-content">
+        <div class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div class="topbar-title">
+                    <h1>📋 Laporan</h1>
+                    <p>Rekap pelanggaran dan prestasi murid</p>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-user">
+                    <div class="user-meta">
+                        <div class="name" id="user-display-name">—</div>
+                        <div class="role" id="user-display-role">—</div>
+                    </div>
+                    <div class="user-avatar" id="user-avatar">A</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="card" style="margin-bottom:20px">
+            <div class="card-header">
+                <div class="card-title">🎛️ Filter Laporan</div>
+                <button class="btn btn-primary btn-sm" onclick="generateReport()">🔄 Generate Laporan</button>
+            </div>
+
+            <div class="filters-bar">
+                <!-- Period -->
+                <div>
+                    <label class="form-label">Periode</label>
+                    <select class="form-control" id="f-period" onchange="onPeriodChange()">
+                        <option value="week">Per Minggu</option>
+                        <option value="month" selected>Per Bulan</option>
+                        <option value="year">Per Tahun</option>
+                        <option value="custom">Kustom</option>
+                    </select>
+                </div>
+
+                <!-- Year -->
+                <div id="f-year-wrap">
+                    <label class="form-label">Tahun</label>
+                    <select class="form-control" id="f-year"></select>
+                </div>
+
+                <!-- Month (shown when period=month) -->
+                <div id="f-month-wrap">
+                    <label class="form-label">Bulan</label>
+                    <select class="form-control" id="f-month">
+                        <option value="1">Januari</option>
+                        <option value="2">Februari</option>
+                        <option value="3">Maret</option>
+                        <option value="4">April</option>
+                        <option value="5">Mei</option>
+                        <option value="6">Juni</option>
+                        <option value="7">Juli</option>
+                        <option value="8">Agustus</option>
+                        <option value="9">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12">Desember</option>
+                    </select>
+                </div>
+
+                <!-- Week (shown when period=week) -->
+                <div id="f-week-wrap" style="display:none">
+                    <label class="form-label">Minggu ke-</label>
+                    <input type="number" class="form-control" id="f-week" min="1" max="53" value="1" style="width:100px">
+                </div>
+
+                <!-- Custom date range -->
+                <div id="f-custom-wrap" style="display:none;flex-direction:column;gap:4px">
+                    <label class="form-label">Dari</label>
+                    <input type="date" class="form-control" id="f-date-from">
+                </div>
+                <div id="f-custom-wrap2" style="display:none;flex-direction:column;gap:4px">
+                    <label class="form-label">Sampai</label>
+                    <input type="date" class="form-control" id="f-date-to">
+                </div>
+
+                <!-- Class filter -->
+                <div>
+                    <label class="form-label">Kelas</label>
+                    <select class="form-control" id="f-kelas">
+                        <option value="">Semua Kelas</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="report-period-label" style="font-size:13px;color:var(--text-muted);margin-top:4px"></div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="stat-grid mb-20" style="margin-bottom:20px" id="report-stats">
+            <div class="stat-card blue">
+                <span class="stat-icon">👥</span>
+                <div class="stat-value" id="rs-total">—</div>
+                <div class="stat-label">Total Murid</div>
+            </div>
+            <div class="stat-card red">
+                <span class="stat-icon">⚠️</span>
+                <div class="stat-value" id="rs-viol">—</div>
+                <div class="stat-label">Total Pelanggaran</div>
+            </div>
+            <div class="stat-card green">
+                <span class="stat-icon">🏆</span>
+                <div class="stat-value" id="rs-ach">—</div>
+                <div class="stat-label">Total Prestasi</div>
+            </div>
+            <div class="stat-card amber">
+                <span class="stat-icon">📊</span>
+                <div class="stat-value" id="rs-avg">—</div>
+                <div class="stat-label">Rata-rata Poin Bersih</div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid-2 mb-20" style="margin-bottom:20px">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">📊 Top 10 Poin Pelanggaran</div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chart-top-violations"></canvas>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">🏫 Perbandingan per Kelas</div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chart-by-class"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Table -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">📋 Rekap Per Murid</div>
+                <div style="display:flex;gap:8px">
+                    <button class="btn btn-success btn-sm" onclick="exportReport()">📥 Export Excel</button>
+                    <button class="btn btn-outline btn-sm" onclick="printReport()">🖨️ Print</button>
+                </div>
+            </div>
+
+            <div class="filters-bar" style="margin-bottom:12px">
+                <div class="search-input-wrap">
+                    <span class="search-ico">🔍</span>
+                    <input type="text" class="form-control" id="report-search" placeholder="Cari nama murid...">
+                </div>
+                <select class="form-control" id="report-status" style="width:auto;min-width:130px">
+                    <option value="">Semua Status</option>
+                    <option value="Bersih">Bersih (≤0)</option>
+                    <option value="Baik">Baik (1–20)</option>
+                    <option value="Perhatian">Perhatian (21–50)</option>
+                    <option value="Serius">Serius (51–100)</option>
+                    <option value="Kritis">Kritis (>100)</option>
+                </select>
+                <select class="form-control" id="report-sort" style="width:auto;min-width:170px">
+                    <option value="poin-desc">Poin Terbanyak ↓</option>
+                    <option value="poin-asc">Poin Tersedikit ↑</option>
+                    <option value="nama-asc">Nama A–Z</option>
+                    <option value="kelas-asc">Kelas A–Z</option>
+                </select>
+            </div>
+
+            <div class="table-wrap">
+                <table id="report-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nama Murid</th>
+                            <th>Kelas</th>
+                            <th>Wali Kelas</th>
+                            <th>Jml Pelanggaran</th>
+                            <th>Poin Pelanggaran</th>
+                            <th>Poin Prestasi</th>
+                            <th>Saldo Poin</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="report-tbody">
+                        <tr><td colspan="9" class="text-center text-muted" style="padding:48px">
+                            Klik "Generate Laporan" untuk melihat data
+                        </td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <div class="pagination-info" id="report-info">—</div>
+                <div class="pagination-btns" id="report-btns"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <p class="loading-text">Membuat laporan...</p>
+    </div>
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/laporan.js"></script>
+</body>
+</html>

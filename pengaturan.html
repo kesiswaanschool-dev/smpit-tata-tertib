@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan — SMPIT Nurul Muhajirin Batam</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="sidebar-container"></div>
+
+    <div class="main-content">
+        <div class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div class="topbar-title">
+                    <h1>⚙️ Pengaturan</h1>
+                    <p>Kelola akun guru dan jenis pelanggaran</p>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-user">
+                    <div class="user-meta">
+                        <div class="name" id="user-display-name">—</div>
+                        <div class="role" id="user-display-role">—</div>
+                    </div>
+                    <div class="user-avatar" id="user-avatar">A</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs-bar">
+            <button class="tab-btn active" id="tab-guru" onclick="switchTab('guru')">👩‍🏫 Akun Guru</button>
+            <button class="tab-btn" id="tab-vtype" onclick="switchTab('vtype')">📝 Jenis Pelanggaran</button>
+            <button class="tab-btn" id="tab-atype" onclick="switchTab('atype')">🏆 Jenis Prestasi</button>
+            <button class="tab-btn" id="tab-db" onclick="switchTab('db')">🗄️ Database / Firebase</button>
+        </div>
+
+        <!-- Tab: Guru Accounts -->
+        <div id="content-guru">
+            <div class="card" style="margin-bottom:20px">
+                <div class="card-header">
+                    <div class="card-title">➕ Tambah Akun Guru</div>
+                </div>
+                <form id="guru-form" novalidate>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Nama Lengkap <span class="required">*</span></label>
+                            <input type="text" class="form-control" id="g-name" placeholder="Nama guru">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Username <span class="required">*</span></label>
+                            <input type="text" class="form-control" id="g-username" placeholder="Username untuk login">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Password <span class="required">*</span></label>
+                            <input type="text" class="form-control" id="g-password" placeholder="Buat password">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Role</label>
+                            <select class="form-control" id="g-role">
+                                <option value="guru">Guru</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Tambah Akun</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">👩‍🏫 Daftar Akun Guru</div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>#</th><th>Nama</th><th>Username</th><th>Role</th><th>Aksi</th></tr>
+                        </thead>
+                        <tbody id="guru-tbody">
+                            <tr><td colspan="5" class="text-center text-muted" style="padding:32px">Memuat...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Violation Types -->
+        <div id="content-vtype" style="display:none">
+            <div class="card" style="margin-bottom:20px">
+                <div class="card-header">
+                    <div class="card-title">➕ Tambah Jenis Pelanggaran</div>
+                </div>
+                <form id="vtype-form" novalidate>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Kategori <span class="required">*</span></label>
+                            <input type="text" class="form-control" id="vt-cat" list="cat-list"
+                                placeholder="Pilih atau ketik kategori baru">
+                            <datalist id="cat-list"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Skor/Poin <span class="required">*</span></label>
+                            <input type="number" class="form-control" id="vt-score" min="1" max="200" placeholder="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nama Pelanggaran <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="vt-name" placeholder="Deskripsi jenis pelanggaran">
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Tambah Pelanggaran</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header" style="flex-wrap: wrap; gap: 8px">
+                    <div class="card-title">📝 Daftar Jenis Pelanggaran</div>
+                    <div style="display:flex;gap:8px;margin-left:auto;flex-wrap:wrap">
+                        <button class="btn btn-outline btn-sm" onclick="downloadVTypeTemplate()">📥 Download Template</button>
+                        <label class="btn btn-outline btn-sm" style="cursor:pointer" for="import-vtype-excel">📤 Import Excel</label>
+                        <input type="file" id="import-vtype-excel" accept=".xlsx,.xls" style="display:none" onchange="importVTypeExcel(this)">
+                        <button class="btn btn-outline btn-sm" onclick="resetViolationTypes()">🔄 Reset ke Default</button>
+                    </div>
+                </div>
+                <div class="filters-bar" style="margin-bottom:12px">
+                    <select class="form-control" id="vt-filter-cat" style="width:auto;min-width:180px">
+                        <option value="">Semua Kategori</option>
+                    </select>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>#</th><th>Kategori</th><th>Nama Pelanggaran</th><th>Poin</th><th>Aksi</th></tr>
+                        </thead>
+                        <tbody id="vtype-tbody">
+                            <tr><td colspan="5" class="text-center text-muted" style="padding:32px">Memuat...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Achievement Types -->
+        <div id="content-atype" style="display:none">
+            <div class="card" style="margin-bottom:20px">
+                <div class="card-header">
+                    <div class="card-title">➕ Tambah Jenis Prestasi</div>
+                </div>
+                <form id="atype-form" novalidate>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Kategori <span class="required">*</span></label>
+                            <input type="text" class="form-control" id="at-cat" list="at-cat-list"
+                                placeholder="Pilih atau ketik kategori baru">
+                            <datalist id="at-cat-list"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Skor/Poin Pengurangan <span class="required">*</span></label>
+                            <input type="number" class="form-control" id="at-score" min="1" max="200" placeholder="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nama Prestasi <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="at-name" placeholder="Deskripsi jenis prestasi">
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Tambah Prestasi</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header" style="flex-wrap: wrap; gap: 8px">
+                    <div class="card-title">🏆 Daftar Jenis Prestasi</div>
+                    <div style="display:flex;gap:8px;margin-left:auto;flex-wrap:wrap">
+                        <button class="btn btn-outline btn-sm" onclick="downloadATypeTemplate()">📥 Download Template</button>
+                        <label class="btn btn-outline btn-sm" style="cursor:pointer" for="import-atype-excel">📤 Import Excel</label>
+                        <input type="file" id="import-atype-excel" accept=".xlsx,.xls" style="display:none" onchange="importATypeExcel(this)">
+                        <button class="btn btn-outline btn-sm" onclick="resetAchievementTypes()">🔄 Reset ke Default</button>
+                    </div>
+                </div>
+                <div class="filters-bar" style="margin-bottom:12px">
+                    <select class="form-control" id="at-filter-cat" style="width:auto;min-width:180px">
+                        <option value="">Semua Kategori</option>
+                    </select>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>#</th><th>Kategori</th><th>Nama Prestasi</th><th>Poin Pengurang</th><th>Aksi</th></tr>
+                        </thead>
+                        <tbody id="atype-tbody">
+                            <tr><td colspan="5" class="text-center text-muted" style="padding:32px">Memuat...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Tab: Database Configuration -->
+        <div id="content-db" style="display:none">
+            <div class="card" style="margin-bottom:20px">
+                <div class="card-header">
+                    <div class="card-title">🗄️ Status Database</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:12px;padding:16px">
+                    <div style="font-size:32px" id="db-status-icon">🔌</div>
+                    <div>
+                        <div style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase">Mode Aktif</div>
+                        <div style="font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px" id="db-status-text">
+                            Loading...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2" style="align-items:start">
+                <!-- Config Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">🔑 Kredensial Firebase</div>
+                    </div>
+                    <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px">
+                        Tempelkan parameter konfigurasi dari Firebase Console Anda untuk mengaktifkan sinkronisasi database online (multi-user).
+                    </p>
+                    <form id="db-config-form" novalidate>
+                        <div class="form-group">
+                            <label class="form-label">Tempel Konfigurasi Firebase <span class="required">*</span></label>
+                            <textarea class="form-control" id="db-config-paste" rows="8" 
+                                placeholder='const firebaseConfig = {&#10;  apiKey: "AIzaSy...",&#10;  authDomain: "...",&#10;  projectId: "...",&#10;  storageBucket: "...",&#10;  messagingSenderId: "...",&#10;  appId: "..."&#10;};' style="font-family: monospace; font-size: 11px; line-height: 1.4; background: rgba(0,0,0,0.2)"></textarea>
+                            <div style="font-size:11px; color: var(--text-muted); margin-top: 6px;">
+                                Tempel langsung seluruh kode konfigurasi web (firebaseConfig) dari Firebase Console.
+                            </div>
+                        </div>
+
+                        <div style="display:flex;gap:8px;margin-top:20px">
+                            <button type="submit" class="btn btn-primary" id="btn-save-db">💾 Hubungkan Database</button>
+                            <button type="button" class="btn btn-danger btn-outline" id="btn-reset-db" onclick="resetDbConfig()" style="display:none">
+                                🗑️ Kembali ke Lokal
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Cloud Migration -->
+                <div class="card" id="migration-card" style="display:none">
+                    <div class="card-header">
+                        <div class="card-title">🚀 Migrasi Data</div>
+                    </div>
+                    <div class="alert alert-warning" style="margin-bottom:16px">
+                        ⚠️ Fitur ini akan memindahkan semua data murid, pelanggaran, dan prestasi dari database lokal browser ini ke Firebase Cloud Database Anda.
+                    </div>
+                    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px">
+                        Pastikan koneksi internet stabil sebelum memulai migrasi data.
+                    </p>
+                    <button class="btn btn-warning" onclick="startDataMigration()" style="width:100%" id="btn-migrate">
+                        🚀 Mulai Migrasi Data ke Cloud
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <p class="loading-text">Memuat...</p>
+    </div>
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/pengaturan.js"></script>
+</body>
+</html>
