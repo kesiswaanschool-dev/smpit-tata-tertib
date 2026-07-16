@@ -39,10 +39,10 @@ function renderNav(activePage) {
         <div class="sidebar" id="sidebar">
             <div class="sidebar-brand">
                 <div class="school-logo">
-                    <img src="logo.png" alt="Logo SMPIT Nurul Muhajirin">
+                    <img src="logo.png" alt="Logo SMP IT Nurul Muhajirin">
                 </div>
-                <h2>SMPIT Nurul Muhajirin</h2>
-                <p>Batam · Sistem Tata Tertib</p>
+                <h2>APLIKASI KESISWAAN</h2>
+                <p>Sistem Tata Tertib Murid</p>
             </div>
 
             <nav class="sidebar-nav">
