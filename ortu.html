@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Orang Tua — SMPIT Nurul Muhajirin Batam</title>
+    <meta name="description" content="Portal laporan kedisiplinan dan prestasi murid SMPIT Nurul Muhajirin Batam untuk Orang Tua / Wali.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            background: #0a0f1e;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .bg-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.12;
+            animation: float 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .blob1 { width: 500px; height: 500px; background: #2563eb; top: -200px; left: -200px; animation-delay: 0s; }
+        .blob2 { width: 400px; height: 400px; background: #f59e0b; bottom: -150px; right: -150px; animation-delay: 3s; }
+        .blob3 { width: 300px; height: 300px; background: #10b981; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: 5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.05); }
+        }
+
+        .blob3 { animation-name: float2; }
+        @keyframes float2 {
+            0%, 100% { transform: translate(-50%,-50%) scale(1); }
+            50% { transform: translate(-50%,-50%) scale(1.1); }
+        }
+
+        .particles { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+        .particle {
+            position: absolute;
+            width: 2px; height: 2px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            animation: rise linear infinite;
+        }
+
+        @keyframes rise {
+            from { transform: translateY(100vh); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            to { transform: translateY(-10vh); opacity: 0; }
+        }
+
+        .login-wrap {
+            width: 100%;
+            max-width: 440px;
+            position: relative;
+            z-index: 10;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .school-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .school-emblem {
+            width: 80px; height: 80px;
+            background: #ffffff;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px;
+            padding: 3px;
+            box-shadow: 0 8px 32px rgba(16, 185, 129, 0.25);
+            position: relative;
+        }
+
+        .school-emblem img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        .school-emblem::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 1px solid rgba(16,185,129,0.3);
+        }
+
+        .school-header h1 {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .school-header p {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .login-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 22px;
+            padding: 32px;
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+        }
+
+        .login-card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .login-card .subtitle {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 28px;
+        }
+
+        .form-group { margin-bottom: 18px; }
+
+        .form-label {
+            display: block;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .input-wrap { position: relative; }
+
+        .input-wrap .input-icon {
+            position: absolute;
+            left: 14px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 17px;
+            color: #475569;
+            pointer-events: none;
+        }
+
+        .input-wrap input {
+            width: 100%;
+            padding: 12px 14px 12px 44px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: #f1f5f9;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.25s ease;
+        }
+
+        .input-wrap input:focus {
+            outline: none;
+            border-color: rgba(16,185,129,0.6);
+            background: rgba(16,185,129,0.06);
+            box-shadow: 0 0 0 3px rgba(16,185,129,0.15);
+        }
+
+        .input-wrap input::placeholder { color: #475569; }
+
+        .error-msg {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.25);
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: #fca5a5;
+            font-size: 13px;
+            display: none;
+            margin-top: 14px;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .error-msg.show { display: flex; }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 12px;
+            color: #334155;
+        }
+
+        /* Report View CSS */
+        .report-wrap {
+            width: 100%;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .profile-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(20px);
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .profile-avatar {
+            width: 70px; height: 70px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px;
+            color: var(--success);
+        }
+
+        .profile-info h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+
+        .profile-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .profile-details div span {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .table-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+        }
+
+        .point-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .point-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .back-link {
+            color: #64748b;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13.5px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: color 0.2s;
+        }
+        .back-link:hover {
+            color: var(--text);
+        }
+
+        @media (max-width: 768px) {
+            .profile-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+                justify-items: center;
+                gap: 16px;
+            }
+            .profile-details {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+
+        /* Print header (only visible in print) */
+        .print-header {
+            display: none;
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+        .print-header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        /* Print styling */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .bg-blob, .particles, #search-section, .no-print, .toast-container, .loading-overlay {
+                display: none !important;
+            }
+            .print-header {
+                display: block !important;
+            }
+            .report-wrap {
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .profile-card, .card, .stat-card {
+                background: white !important;
+                border: 1px solid #ccc !important;
+                color: black !important;
+                box-shadow: none !important;
+                backdrop-filter: none !important;
+                margin-bottom: 16px !important;
+            }
+            .profile-avatar {
+                border: 1px solid #ccc !important;
+                background: #eee !important;
+            }
+            .stat-value {
+                -webkit-text-fill-color: initial !important;
+                color: black !important;
+            }
+            th {
+                background-color: #f1f5f9 !important;
+                color: black !important;
+                border-bottom: 2px solid #ccc !important;
+            }
+            td {
+                border-bottom: 1px solid #eee !important;
+                color: black !important;
+            }
+            .badge {
+                border: 1px solid #999 !important;
+                color: black !important;
+                background: transparent !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background blobs -->
+    <div class="bg-blob blob1"></div>
+    <div class="bg-blob blob2"></div>
+    <div class="bg-blob blob3"></div>
+
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- 1. Pencarian NIS Section -->
+    <div class="login-wrap" id="search-section">
+        <div class="school-header">
+            <div class="school-emblem">
+                <img src="logo.png" alt="Logo SMPIT Nurul Muhajirin">
+            </div>
+            <h1>SMPIT Nurul Muhajirin</h1>
+            <p>Portal Laporan Kedisiplinan Murid</p>
+        </div>
+
+        <div class="login-card">
+            <h2>Cari Laporan Murid 👋</h2>
+            <p class="subtitle">Masukkan NIS untuk melihat perkembangan kedisiplinan & prestasi anak</p>
+
+            <form id="search-form" novalidate>
+                <div class="form-group">
+                    <label class="form-label">Nomor Induk Siswa (NIS)</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">🔍</span>
+                        <input type="text" id="nis-input" placeholder="Masukkan NIS murid..." required>
+                    </div>
+                </div>
+
+                <div class="error-msg" id="error-msg">
+                    <span>❌</span>
+                    <span id="error-text">NIS tidak ditemukan. Harap periksa kembali.</span>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%; margin-top: 12px; display:flex; align-items:center; justify-content:center; gap:8px;" id="btn-search">
+                    <span>Cari Laporan</span>
+                </button>
+            </form>
+
+            <div style="text-align: center; margin-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px;">
+                <a href="index.html" style="color: #64748b; font-size: 13px; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s;" onmouseover="this.style.color='#f1f5f9'" onmouseout="this.style.color='#64748b'">
+                    <span>← Kembali ke Halaman Login</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="login-footer">
+            &copy; 2024 SMPIT Nurul Muhajirin Batam · Laporan Kedisiplinan
+        </div>
+    </div>
+
+    <!-- 2. Detail Laporan Section (Hidden by Default) -->
+    <div class="report-wrap" id="report-section" style="display: none;">
+        <!-- Print Header -->
+        <div class="print-header">
+            <h1>SMPIT NURUL MUHAJIRIN BATAM</h1>
+            <p>Sistem Informasi Tata Tertib & Prestasi Murid</p>
+            <p style="font-size:12px; margin-top:4px;">Alamat: Batam, Kepulauan Riau</p>
+        </div>
+
+        <!-- Navigation / Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;" class="no-print">
+            <a href="#" class="back-link" id="btn-back">
+                <span>← Cari NIS Lain</span>
+            </a>
+            <div style="display:flex; gap:8px;">
+                <button class="btn btn-outline btn-sm" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+            </div>
+        </div>
+
+        <!-- Profil Murid Card -->
+        <div class="profile-card">
+            <div class="profile-avatar">👨‍🎓</div>
+            <div class="profile-info">
+                <h3 id="student-name">—</h3>
+                <div class="profile-details">
+                    <div>NIS: <span id="student-nis">—</span></div>
+                    <div>Kelas: <span id="student-class">—</span></div>
+                    <div>Wali Kelas: <span id="student-wali">—</span></div>
+                    <div>Jenis Kelamin: <span id="student-gender">—</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistik Ringkasan -->
+        <div class="stat-grid">
+            <div class="stat-card red">
+                <span class="stat-icon">⚠️</span>
+                <div class="stat-value" id="stat-viol-points">0</div>
+                <div class="stat-label">Total Poin Pelanggaran</div>
+            </div>
+            <div class="stat-card green">
+                <span class="stat-icon">🏆</span>
+                <div class="stat-value" id="stat-ach-points">0</div>
+                <div class="stat-label">Total Poin Prestasi</div>
+            </div>
+            <div class="stat-card" id="stat-net-card">
+                <span class="stat-icon">📊</span>
+                <div class="stat-value" id="stat-net-points">0</div>
+                <div class="stat-label" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                    <span>Saldo Poin Akhir</span>
+                    <span class="badge" id="student-status-badge">Bersih</span>
+                </div>
+                <div class="point-bar" style="margin-top: 12px;">
+                    <div class="point-bar-fill" id="student-point-bar-fill" style="width: 0%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Riwayat Pelanggaran -->
+        <div class="card" style="margin-bottom: 24px;">
+            <div class="table-title">⚠️ Riwayat Catatan Pelanggaran</div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 120px;">Tanggal</th>
+                            <th>Kategori</th>
+                            <th>Pelanggaran</th>
+                            <th style="width: 80px;" class="text-center">Poin</th>
+                            <th>Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="viol-tbody">
+                        <!-- Filled by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Riwayat Prestasi -->
+        <div class="card">
+            <div class="table-title">🏆 Riwayat Catatan Prestasi</div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 120px;">Tanggal</th>
+                            <th>Kategori</th>
+                            <th>Prestasi</th>
+                            <th style="width: 80px;" class="text-center">Poin</th>
+                            <th>Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ach-tbody">
+                        <!-- Filled by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay elements -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <p class="loading-text">Memproses...</p>
+    </div>
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/utils.js"></script>
+
+    <!-- Page Logic -->
+    <script>
+        // Create floating particles
+        (function() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDuration = (6 + Math.random() * 10) + 's';
+                p.style.animationDelay = (Math.random() * 10) + 's';
+                p.style.width = p.style.height = (1 + Math.random() * 2) + 'px';
+                p.style.opacity = 0.1 + Math.random() * 0.4;
+                container.appendChild(p);
+            }
+        })();
+
+        // Form handling
+        document.getElementById('search-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const nis = document.getElementById('nis-input').value.trim();
+            const errEl = document.getElementById('error-msg');
+            
+            if (!nis) {
+                document.getElementById('error-text').textContent = 'Harap isi NIS murid.';
+                errEl.classList.add('show');
+                return;
+            }
+
+            errEl.classList.remove('show');
+            showLoading('Mencari data murid...');
+
+            try {
+                // Find student by NIS
+                const studentSnap = await db.collection('students').where('nis', '==', nis).limit(1).get();
+                if (studentSnap.empty) {
+                    hideLoading();
+                    document.getElementById('error-text').textContent = 'NIS tidak ditemukan. Pastikan nomor sudah benar.';
+                    errEl.classList.add('show');
+                    return;
+                }
+
+                const doc = studentSnap.docs[0];
+                const student = { id: doc.id, ...doc.data() };
+
+                // Get violations & achievements
+                const [violSnap, achSnap] = await Promise.all([
+                    db.collection('violations').where('studentId', '==', student.id).get(),
+                    db.collection('achievements').where('studentId', '==', student.id).get()
+                ]);
+
+                const violations = violSnap.docs.map(d => d.data());
+                const achievements = achSnap.docs.map(d => d.data());
+
+                // Sort by date desc
+                violations.sort((a, b) => b.date.localeCompare(a.date));
+                achievements.sort((a, b) => b.date.localeCompare(a.date));
+
+                // Populate UI
+                displayReport(student, violations, achievements);
+
+                // Show report, hide search
+                document.getElementById('search-section').style.display = 'none';
+                document.getElementById('report-section').style.display = 'block';
+                
+            } catch (err) {
+                console.error(err);
+                showToast('Terjadi kesalahan saat memuat data: ' + err.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        });
+
+        function displayReport(student, violations, achievements) {
+            // Profil
+            document.getElementById('student-name').textContent = student.nama || '-';
+            document.getElementById('student-nis').textContent = student.nis || '-';
+            document.getElementById('student-class').textContent = student.kelas || '-';
+            document.getElementById('student-wali').textContent = student.waliKelas || '-';
+            document.getElementById('student-gender').textContent = student.gender === 'L' ? 'Laki-laki' : (student.gender === 'P' ? 'Perempuan' : '-');
+
+            // Hitung poin
+            const totalViolPoin = violations.reduce((sum, v) => sum + (v.score || 0), 0);
+            const totalAchPoin = achievements.reduce((sum, a) => sum + (a.score || 0), 0);
+            const netPoints = Math.max(0, totalViolPoin - totalAchPoin);
+
+            document.getElementById('stat-viol-points').textContent = totalViolPoin;
+            document.getElementById('stat-ach-points').textContent = totalAchPoin;
+            document.getElementById('stat-net-points').textContent = netPoints;
+
+            // Point bar & Status badge
+            const status = getPointStatus(netPoints);
+            const badge = document.getElementById('student-status-badge');
+            badge.textContent = status.text;
+            badge.className = 'badge ' + status.class;
+            
+            const barFill = document.getElementById('student-point-bar-fill');
+            const pct = Math.min(100, (netPoints / 150) * 100);
+            barFill.style.width = pct + '%';
+            barFill.style.background = status.color;
+
+            // Highlight net card background border to status color
+            const netCard = document.getElementById('stat-net-card');
+            netCard.style.borderColor = status.color + '66'; // add transparency to color
+
+            // Render tables
+            const violTbody = document.getElementById('viol-tbody');
+            if (violations.length === 0) {
+                violTbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted" style="padding: 24px;">Tidak ada catatan pelanggaran</td></tr>`;
+            } else {
+                violTbody.innerHTML = violations.map(v => `
+                    <tr>
+                        <td class="td-muted">${formatDate(v.date)}</td>
+                        <td><span class="badge badge-amber">${v.category || '-'}</span></td>
+                        <td style="font-weight:600">${v.violationType || '-'}</td>
+                        <td class="text-center" style="font-weight:700;color:#f87171">${v.score || 0}</td>
+                        <td class="td-muted">${escHtml(v.notes || '-')}</td>
+                    </tr>
+                `).join('');
+            }
+
+            const achTbody = document.getElementById('ach-tbody');
+            if (achievements.length === 0) {
+                achTbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted" style="padding: 24px;">Tidak ada catatan prestasi</td></tr>`;
+            } else {
+                achTbody.innerHTML = achievements.map(a => `
+                    <tr>
+                        <td class="td-muted">${formatDate(a.date)}</td>
+                        <td><span class="badge badge-green">${a.category || '-'}</span></td>
+                        <td style="font-weight:600">${a.achievementType || '-'}</td>
+                        <td class="text-center" style="font-weight:700;color:#34d399">+${a.score || 0}</td>
+                        <td class="td-muted">${escHtml(a.notes || '-')}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        // Helper escape HTML
+        function escHtml(str) {
+            if (!str) return '';
+            const temp = document.createElement('div');
+            temp.textContent = str;
+            return temp.innerHTML;
+        }
+
+        // Back button action
+        document.getElementById('btn-back').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('nis-input').value = '';
+            document.getElementById('error-msg').classList.remove('show');
+            document.getElementById('report-section').style.display = 'none';
+            document.getElementById('search-section').style.display = 'flex';
+        });
+    </script>
+</body>
+</html>
