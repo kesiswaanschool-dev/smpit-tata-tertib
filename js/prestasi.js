@@ -7,6 +7,12 @@ let allAchievements = [];
 let filteredAchievements = [];
 let histPage = 1;
 const HIST_SIZE = 15;
+const categoryColors = {
+    'Akademik': 'badge-blue',
+    'Keagamaan / Tahfidz': 'badge-green',
+    'Minat & Bakat (Olahraga / Seni)': 'badge-purple',
+    'Lain-lain': 'badge-amber'
+};
 
 document.addEventListener('DOMContentLoaded', async () => {
     requireAuth();
