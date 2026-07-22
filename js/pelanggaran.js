@@ -15,6 +15,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderNav('pelanggaran');
     initUserDisplay();
 
+    if (!isAdmin()) {
+        const btnExport = document.getElementById('btn-export');
+        if (btnExport) btnExport.style.display = 'none';
+        const thAksi = document.getElementById('th-aksi');
+        if (thAksi) thAksi.style.display = 'none';
+    }
+
     document.getElementById('f-date').value = today();
 
     // Show recorder info
@@ -279,9 +286,10 @@ function renderHistTable() {
     const tbody = document.getElementById('history-tbody');
     const start = (histPage - 1) * HIST_SIZE;
     const page = filteredViolations.slice(start, start + HIST_SIZE);
+    const admin = isAdmin();
 
     if (page.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state">
+        tbody.innerHTML = `<tr><td colspan="${admin ? 10 : 9}"><div class="empty-state">
             <div class="empty-icon">⚠️</div>
             <h3>Belum ada data</h3>
             <p>Catatan pelanggaran akan muncul di sini</p>
@@ -300,9 +308,7 @@ function renderHistTable() {
             <td><span class="badge badge-red" style="font-size:13px;font-weight:800">+${v.score || 0}</span></td>
             <td class="td-muted" style="max-width:150px;font-size:12px">${v.notes || '—'}</td>
             <td class="td-muted">${v.recordedBy || '-'}</td>
-            <td>
-                <button class="btn btn-xs btn-danger" onclick="deleteViolation('${v.id}')">🗑️</button>
-            </td>
+            ${admin ? `<td><button class="btn btn-xs btn-danger" onclick="deleteViolation('${v.id}')">🗑️</button></td>` : ''}
         </tr>`).join('');
 }
 
@@ -337,6 +343,10 @@ function goHistPage(p) {
 }
 
 async function deleteViolation(id) {
+    if (!isAdmin()) {
+        showToast('Anda tidak memiliki akses untuk menghapus data.', 'error');
+        return;
+    }
     const ok = await confirmAction('Hapus catatan pelanggaran ini?');
     if (!ok) return;
     try {
@@ -348,6 +358,10 @@ async function deleteViolation(id) {
 }
 
 function exportViolations() {
+    if (!isAdmin()) {
+        showToast('Anda tidak memiliki akses untuk meng-export data.', 'error');
+        return;
+    }
     const data = filteredViolations.map((v, i) => ({
         'No': i+1,
         'Tanggal': v.date,

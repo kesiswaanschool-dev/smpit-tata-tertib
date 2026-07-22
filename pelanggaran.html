@@ -148,7 +148,7 @@
             <div class="card-header">
                 <div class="card-title">📋 Riwayat Pelanggaran</div>
                 <div style="display:flex;gap:8px">
-                    <button class="btn btn-outline btn-sm" onclick="exportViolations()">📥 Export Excel</button>
+                    <button class="btn btn-outline btn-sm" id="btn-export" onclick="exportViolations()">📥 Export Excel</button>
                 </div>
             </div>
 
@@ -180,7 +180,7 @@
                             <th>Poin</th>
                             <th>Keterangan</th>
                             <th>Dicatat Oleh</th>
-                            <th>Aksi</th>
+                            <th id="th-aksi">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="history-tbody">

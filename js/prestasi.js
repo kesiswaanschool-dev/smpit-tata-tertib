@@ -7,6 +7,7 @@ let allAchievements = [];
 let filteredAchievements = [];
 let histPage = 1;
 const HIST_SIZE = 15;
+
 const categoryColors = {
     'Akademik': 'badge-blue',
     'Keagamaan / Tahfidz': 'badge-green',
@@ -18,6 +19,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     requireAuth();
     renderNav('prestasi');
     initUserDisplay();
+
+    if (!isAdmin()) {
+        const btnExport = document.getElementById('btn-export');
+        if (btnExport) btnExport.style.display = 'none';
+        const thAksi = document.getElementById('th-aksi');
+        if (thAksi) thAksi.style.display = 'none';
+    }
 
     document.getElementById('f-date').value = today();
 
@@ -304,9 +312,10 @@ function renderHistTable() {
     const tbody = document.getElementById('history-tbody');
     const start = (histPage-1) * HIST_SIZE;
     const page = filteredAchievements.slice(start, start + HIST_SIZE);
+    const admin = isAdmin();
 
     if (page.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state">
+        tbody.innerHTML = `<tr><td colspan="${admin ? 10 : 9}"><div class="empty-state">
             <div class="empty-icon">🏆</div>
             <h3>Belum ada data prestasi</h3>
             <p>Catatan prestasi akan muncul di sini</p>
@@ -325,9 +334,7 @@ function renderHistTable() {
             <td><span class="badge badge-green" style="font-size:13px;font-weight:800">−${a.score || 0}</span></td>
             <td class="td-muted" style="font-size:12px">${a.notes || '—'}</td>
             <td class="td-muted">${a.recordedBy || '-'}</td>
-            <td>
-                <button class="btn btn-xs btn-danger" onclick="deleteAchievement('${a.id}')">🗑️</button>
-            </td>
+            ${admin ? `<td><button class="btn btn-xs btn-danger" onclick="deleteAchievement('${a.id}')">🗑️</button></td>` : ''}
         </tr>`).join('');
 }
 
@@ -362,6 +369,10 @@ function goHistPage(p) {
 }
 
 async function deleteAchievement(id) {
+    if (!isAdmin()) {
+        showToast('Anda tidak memiliki akses untuk menghapus data.', 'error');
+        return;
+    }
     const ok = await confirmAction('Hapus catatan prestasi ini?');
     if (!ok) return;
     try {
@@ -373,6 +384,10 @@ async function deleteAchievement(id) {
 }
 
 function exportAchievements() {
+    if (!isAdmin()) {
+        showToast('Anda tidak memiliki akses untuk meng-export data.', 'error');
+        return;
+    }
     const data = filteredAchievements.map((a, i) => ({
         'No': i+1,
         'Tanggal': a.date,
