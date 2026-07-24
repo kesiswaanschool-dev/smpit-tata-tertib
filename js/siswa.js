@@ -34,10 +34,51 @@ function listenStudents() {
 function setupListeners() {
     document.getElementById('search-input').addEventListener('input',
         debounce(() => { currentPage = 1; applyFilters(); }, 300));
-    document.getElementById('filter-kelas').addEventListener('change', () => { currentPage = 1; applyFilters(); });
-    document.getElementById('filter-wali').addEventListener('change', () => { currentPage = 1; applyFilters(); });
+    document.getElementById('filter-kelas').addEventListener('change', onKelasFilterChange);
+    document.getElementById('filter-wali').addEventListener('change', onWaliFilterChange);
     document.getElementById('filter-gender').addEventListener('change', () => { currentPage = 1; applyFilters(); });
     document.getElementById('student-form').addEventListener('submit', saveStudent);
+}
+
+function onKelasFilterChange() {
+    const kelas = document.getElementById('filter-kelas').value;
+    const waliSel = document.getElementById('filter-wali');
+    const genderSel = document.getElementById('filter-gender');
+
+    if (kelas) {
+        const classStudents = allStudents.filter(s => s.kelas === kelas);
+        const walis = [...new Set(classStudents.map(s => s.waliKelas).filter(Boolean))];
+        if (walis.length > 0) {
+            waliSel.value = walis[0];
+        }
+
+        const genders = [...new Set(classStudents.map(s => s.gender).filter(Boolean))];
+        if (genders.length === 1) {
+            genderSel.value = genders[0];
+        }
+    } else {
+        if (waliSel) waliSel.value = '';
+        if (genderSel) genderSel.value = '';
+    }
+
+    currentPage = 1;
+    applyFilters();
+}
+
+function onWaliFilterChange() {
+    const wali = document.getElementById('filter-wali').value;
+    const kelasSel = document.getElementById('filter-kelas');
+
+    if (wali) {
+        const waliStudents = allStudents.filter(s => s.waliKelas === wali);
+        const classes = [...new Set(waliStudents.map(s => s.kelas).filter(Boolean))];
+        if (classes.length > 0) {
+            kelasSel.value = classes[0];
+        }
+    }
+
+    currentPage = 1;
+    applyFilters();
 }
 
 function applyFilters() {
@@ -57,6 +98,7 @@ function applyFilters() {
         return matchSearch && matchKelas && matchWali && matchGender;
     });
 
+    updateCounters();
     renderTable();
     renderPagination();
 }
@@ -79,9 +121,10 @@ function updateWaliFilter() {
 }
 
 function updateCounters() {
-    const l = allStudents.filter(s => s.gender === 'L').length;
-    const p = allStudents.filter(s => s.gender === 'P').length;
-    document.getElementById('count-total').textContent = `Total: ${allStudents.length}`;
+    const list = filteredStudents || allStudents;
+    const l = list.filter(s => s.gender === 'L').length;
+    const p = list.filter(s => s.gender === 'P').length;
+    document.getElementById('count-total').textContent = `Total: ${list.length}`;
     document.getElementById('count-l').textContent = `Laki-laki: ${l}`;
     document.getElementById('count-p').textContent = `Perempuan: ${p}`;
 }
