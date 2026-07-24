@@ -187,8 +187,12 @@ async function generateReport() {
 
     // Apply filters and render
     applyReportFilters();
-    renderTopViolationsChart();
-    renderClassChart();
+    try {
+        renderTopViolationsChart();
+        renderClassChart();
+    } catch (chartErr) {
+        console.warn('Error rendering charts:', chartErr);
+    }
     hideLoading();
     showToast('Laporan berhasil dibuat', 'success');
 }
@@ -295,16 +299,18 @@ function goReportPage(p) {
 }
 
 function renderTopViolationsChart() {
+    const canvas = document.getElementById('chart-top-violations');
+    if (!canvas) return;
     const sorted = [...reportData].sort((a, b) => b.netPoin - a.netPoin).slice(0, 10);
-    const ctx = document.getElementById('chart-top-violations').getContext('2d');
+    const ctx = canvas.getContext('2d');
     if (topChart) topChart.destroy();
 
-    const colors = sorted.map(r => r.status.color);
+    const colors = sorted.map(r => (r.status && r.status.color) ? r.status.color : '#2563eb');
 
     topChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: sorted.map(r => r.nama.split(' ')[0] + (r.nama.split(' ').length > 1 ? ' ' + r.nama.split(' ')[1] : '')),
+            labels: sorted.map(r => (r.nama || '').split(' ')[0] + ((r.nama || '').split(' ').length > 1 ? ' ' + (r.nama || '').split(' ')[1] : '')),
             datasets: [{
                 label: 'Saldo Poin',
                 data: sorted.map(r => r.netPoin),
@@ -334,6 +340,8 @@ function renderTopViolationsChart() {
 }
 
 function renderClassChart() {
+    const canvas = document.getElementById('chart-by-class');
+    if (!canvas) return;
     const classMap = {};
     reportData.forEach(r => {
         if (!classMap[r.kelas]) classMap[r.kelas] = { total: 0, count: 0 };
@@ -343,7 +351,7 @@ function renderClassChart() {
 
     const labels = Object.keys(classMap).sort();
     const avgs = labels.map(k => Math.round(classMap[k].total / classMap[k].count));
-    const ctx = document.getElementById('chart-by-class').getContext('2d');
+    const ctx = canvas.getContext('2d');
     if (classChart) classChart.destroy();
 
     classChart = new Chart(ctx, {
