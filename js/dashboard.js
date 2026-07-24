@@ -335,9 +335,7 @@ async function loadRecentActivity() {
             const badge = isV
                 ? `<span class="badge badge-red">Pelanggaran</span>`
                 : `<span class="badge badge-green">Prestasi</span>`;
-            const poin = isV
-                ? `<span style="color:#f87171;font-weight:700">${item.score || 0}</span>`
-                : `<span style="color:#34d399;font-weight:700">${item.score || 0}</span>`;
+            const poin = `<span style="color:var(--text);font-weight:700">${item.score || 0}</span>`;
             const timeStr = item.ts ? item.ts.toLocaleString('id-ID', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) : '-';
 
             return `<tr>

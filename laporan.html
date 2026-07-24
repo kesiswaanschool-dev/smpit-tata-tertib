@@ -171,14 +171,6 @@
                     <span class="search-ico">🔍</span>
                     <input type="text" class="form-control" id="report-search" placeholder="Cari nama murid...">
                 </div>
-                <select class="form-control" id="report-status" style="width:auto;min-width:130px">
-                    <option value="">Semua Status</option>
-                    <option value="Bersih">Bersih (≤0)</option>
-                    <option value="Baik">Baik (1–20)</option>
-                    <option value="Perhatian">Perhatian (21–50)</option>
-                    <option value="Serius">Serius (51–100)</option>
-                    <option value="Kritis">Kritis (>100)</option>
-                </select>
                 <select class="form-control" id="report-sort" style="width:auto;min-width:170px">
                     <option value="poin-desc">Poin Terbanyak ↓</option>
                     <option value="poin-asc">Poin Tersedikit ↑</option>
@@ -199,11 +191,10 @@
                             <th>Poin Pelanggaran</th>
                             <th>Poin Prestasi</th>
                             <th>Saldo Poin</th>
-                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody id="report-tbody">
-                        <tr><td colspan="9" class="text-center text-muted" style="padding:48px">
+                        <tr><td colspan="8" class="text-center text-muted" style="padding:48px">
                             Klik "Generate Laporan" untuk melihat data
                         </td></tr>
                     </tbody>

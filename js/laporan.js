@@ -195,13 +195,10 @@ async function generateReport() {
 
 function applyReportFilters() {
     const search = document.getElementById('report-search').value.toLowerCase();
-    const status = document.getElementById('report-status').value;
     const sort = document.getElementById('report-sort').value;
 
     filteredReport = reportData.filter(r => {
-        const matchSearch = !search || r.nama.toLowerCase().includes(search);
-        const matchStatus = !status || r.status.text === status;
-        return matchSearch && matchStatus;
+        return !search || r.nama.toLowerCase().includes(search);
     });
 
     // Sort
@@ -220,7 +217,6 @@ function applyReportFilters() {
 
 function setupTableFilters() {
     document.getElementById('report-search').addEventListener('input', debounce(applyReportFilters, 300));
-    document.getElementById('report-status').addEventListener('change', applyReportFilters);
     document.getElementById('report-sort').addEventListener('change', applyReportFilters);
 }
 
@@ -230,7 +226,7 @@ function renderReportTable() {
     const page = filteredReport.slice(start, start+RPT_SIZE);
 
     if (page.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state">
+        tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state">
             <div class="empty-icon">📋</div>
             <h3>Tidak ada data</h3>
             <p>Tidak ada murid yang cocok dengan filter</p>
@@ -239,9 +235,6 @@ function renderReportTable() {
     }
 
     tbody.innerHTML = page.map((r, i) => {
-        const violColor = r.violPoin > 0 ? '#f87171' : '#94a3b8';
-        const achColor = r.achPoin > 0 ? '#34d399' : '#94a3b8';
-        const netColor = r.status.color;
         const barPct = Math.min(100, (r.netPoin / 150) * 100);
         const sisaPrestasi = Math.max(0, r.achPoin - r.violPoin);
 
@@ -252,21 +245,20 @@ function renderReportTable() {
             <td class="td-muted" style="font-size:12px">${r.waliKelas}</td>
             <td class="text-center td-muted">${r.violCount} kali</td>
             <td class="text-center">
-                <span style="font-weight:700;color:${violColor};font-size:14px">${r.violPoin}</span>
+                <span style="font-weight:700;color:var(--text);font-size:14px">${r.violPoin}</span>
             </td>
             <td class="text-center">
-                <span style="font-weight:700;color:${achColor};font-size:14px">${r.achPoin}</span>
+                <span style="font-weight:700;color:var(--text);font-size:14px">${r.achPoin}</span>
             </td>
             <td>
                 <div style="display:flex;align-items:center;gap:8px">
-                    <span style="font-weight:800;font-size:15px;color:${netColor};min-width:30px">${r.netPoin}</span>
+                    <span style="font-weight:800;font-size:15px;color:var(--text);min-width:30px">${r.netPoin}</span>
                     <div class="point-bar" style="flex:1">
-                        <div class="point-bar-fill" style="width:${barPct}%;background:${netColor}"></div>
+                        <div class="point-bar-fill" style="width:${barPct}%;background:var(--primary-light)"></div>
                     </div>
                 </div>
-                ${sisaPrestasi > 0 ? `<div style="font-size:11px;color:#34d399;font-weight:600;margin-top:3px">⭐ Simpanan Prestasi: ${sisaPrestasi} poin</div>` : ''}
+                ${sisaPrestasi > 0 ? `<div style="font-size:11px;color:var(--text-secondary);font-weight:600;margin-top:3px">⭐ Simpanan Prestasi: ${sisaPrestasi} poin</div>` : ''}
             </td>
-            <td><span class="badge ${r.status.class}">${r.status.text}</span></td>
         </tr>`;
     }).join('');
 }
@@ -417,8 +409,7 @@ function exportReport() {
         'Poin Prestasi': r.achPoin,
         'Saldo Poin': (r.achPoin > r.violPoin)
             ? `0 (Simpanan Prestasi: ${r.achPoin - r.violPoin} poin)`
-            : r.netPoin,
-        'Status': r.status.text
+            : r.netPoin
     }));
     downloadExcel(data, `laporan_${periodLabel.replace(/\s+/g,'_')}_${today()}.xls`, 'Laporan');
     showToast(`Laporan ${data.length} murid berhasil diexport (.xls)`, 'success');

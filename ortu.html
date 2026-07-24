@@ -486,14 +486,13 @@
             <div class="stat-card" id="stat-net-card">
                 <span class="stat-icon">📊</span>
                 <div class="stat-value" id="stat-net-points">0</div>
-                <div class="stat-label" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                <div class="stat-label">
                     <span>Saldo Poin Akhir</span>
-                    <span class="badge" id="student-status-badge">Bersih</span>
                 </div>
                 <div class="point-bar" style="margin-top: 12px;">
                     <div class="point-bar-fill" id="student-point-bar-fill" style="width: 0%;"></div>
                 </div>
-                <div id="stat-net-subtext" style="font-size:11px;color:#34d399;font-weight:600;margin-top:6px;display:none;"></div>
+                <div id="stat-net-subtext" style="font-size:11px;color:var(--text-secondary);font-weight:600;margin-top:6px;display:none;"></div>
             </div>
         </div>
 
@@ -643,20 +642,10 @@
             document.getElementById('stat-ach-points').textContent = totalAchPoin;
             document.getElementById('stat-net-points').textContent = netPoints;
 
-            // Point bar & Status badge
-            const status = getPointStatus(netPoints);
-            const badge = document.getElementById('student-status-badge');
-            badge.textContent = status.text;
-            badge.className = 'badge ' + status.class;
-            
             const barFill = document.getElementById('student-point-bar-fill');
             const pct = Math.min(100, (netPoints / 150) * 100);
             barFill.style.width = pct + '%';
-            barFill.style.background = status.color;
-
-            // Highlight net card background border to status color
-            const netCard = document.getElementById('stat-net-card');
-            netCard.style.borderColor = status.color + '66'; // add transparency to color
+            barFill.style.background = 'var(--primary-light)';
 
             const netSubtext = document.getElementById('stat-net-subtext');
             const sisaPrestasi = Math.max(0, totalAchPoin - totalViolPoin);
@@ -677,7 +666,7 @@
                         <td class="td-muted">${formatDate(v.date)}</td>
                         <td><span class="badge badge-amber">${v.category || '-'}</span></td>
                         <td style="font-weight:600">${v.violationType || '-'}</td>
-                        <td class="text-center" style="font-weight:700;color:#f87171">${v.score || 0}</td>
+                        <td class="text-center" style="font-weight:700;color:var(--text)">${v.score || 0}</td>
                         <td class="td-muted">${escHtml(v.notes || '-')}</td>
                     </tr>
                 `).join('');
@@ -692,7 +681,7 @@
                         <td class="td-muted">${formatDate(a.date)}</td>
                         <td><span class="badge badge-green">${a.category || '-'}</span></td>
                         <td style="font-weight:600">${a.achievementType || '-'}</td>
-                        <td class="text-center" style="font-weight:700;color:#34d399">${a.score || 0}</td>
+                        <td class="text-center" style="font-weight:700;color:var(--text)">${a.score || 0}</td>
                         <td class="td-muted">${escHtml(a.notes || '-')}</td>
                     </tr>
                 `).join('');
