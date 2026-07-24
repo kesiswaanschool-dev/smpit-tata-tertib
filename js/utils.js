@@ -269,3 +269,34 @@ function exportReportPDF(title, columns, rows) {
     });
     doc.save(`${title.replace(/\s+/g, '_')}_${today()}.pdf`);
 }
+
+// --- Automatic Wali Kelas Name Update Migration ---
+async function fixWaliKelasName() {
+    if (typeof db === 'undefined' || !db) return;
+    const oldName = 'Umi Huzaimah, S.Pd';
+    const newName = 'Umi Huzaimah, S.Pd, Gr';
+    try {
+        const snap = await db.collection('students').where('waliKelas', '==', oldName).get();
+        snap.forEach(doc => {
+            db.collection('students').doc(doc.id).update({ waliKelas: newName });
+        });
+
+        const vSnap = await db.collection('violations').where('waliKelas', '==', oldName).get();
+        vSnap.forEach(doc => {
+            db.collection('violations').doc(doc.id).update({ waliKelas: newName });
+        });
+
+        const aSnap = await db.collection('achievements').where('waliKelas', '==', oldName).get();
+        aSnap.forEach(doc => {
+            db.collection('achievements').doc(doc.id).update({ waliKelas: newName });
+        });
+
+        const uSnap = await db.collection('users').where('name', '==', oldName).get();
+        uSnap.forEach(doc => {
+            db.collection('users').doc(doc.id).update({ name: newName });
+        });
+    } catch (e) {
+        // Silent catch
+    }
+}
+setTimeout(fixWaliKelasName, 1200);
