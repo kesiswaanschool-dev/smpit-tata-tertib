@@ -273,27 +273,45 @@ function exportReportPDF(title, columns, rows) {
 // --- Automatic Wali Kelas Name Update Migration ---
 async function fixWaliKelasName() {
     if (typeof db === 'undefined' || !db) return;
-    const oldName = 'Umi Huzaimah, S.Pd';
-    const newName = 'Umi Huzaimah, S.Pd, Gr';
+    const migrations = [
+        { oldName: 'Umi Huzaimah, S.Pd', newName: 'Umi Huzaimah, S.Pd, Gr' },
+        { oldName: 'SILVI INDRIA, S.P.,Gr', newName: 'Soufia, S.Pd. Gr' },
+        { oldName: 'SILVI INDRIA, S.P., Gr', newName: 'Soufia, S.Pd. Gr' },
+        { oldName: 'SILVI INDRIA, S.P.', newName: 'Soufia, S.Pd. Gr' },
+        { oldName: 'Silvi Indria, S.P.,Gr', newName: 'Soufia, S.Pd. Gr' },
+        { oldName: 'Silvi Indria, S.P., Gr', newName: 'Soufia, S.Pd. Gr' }
+    ];
+
     try {
-        const snap = await db.collection('students').where('waliKelas', '==', oldName).get();
-        snap.forEach(doc => {
-            db.collection('students').doc(doc.id).update({ waliKelas: newName });
-        });
+        for (const m of migrations) {
+            const snap = await db.collection('students').where('waliKelas', '==', m.oldName).get();
+            snap.forEach(doc => {
+                db.collection('students').doc(doc.id).update({ waliKelas: m.newName });
+            });
 
-        const vSnap = await db.collection('violations').where('waliKelas', '==', oldName).get();
-        vSnap.forEach(doc => {
-            db.collection('violations').doc(doc.id).update({ waliKelas: newName });
-        });
+            const vSnap = await db.collection('violations').where('waliKelas', '==', m.oldName).get();
+            vSnap.forEach(doc => {
+                db.collection('violations').doc(doc.id).update({ waliKelas: m.newName });
+            });
 
-        const aSnap = await db.collection('achievements').where('waliKelas', '==', oldName).get();
-        aSnap.forEach(doc => {
-            db.collection('achievements').doc(doc.id).update({ waliKelas: newName });
-        });
+            const aSnap = await db.collection('achievements').where('waliKelas', '==', m.oldName).get();
+            aSnap.forEach(doc => {
+                db.collection('achievements').doc(doc.id).update({ waliKelas: m.newName });
+            });
 
-        const uSnap = await db.collection('users').where('name', '==', oldName).get();
-        uSnap.forEach(doc => {
-            db.collection('users').doc(doc.id).update({ name: newName });
+            const uSnap = await db.collection('users').where('name', '==', m.oldName).get();
+            uSnap.forEach(doc => {
+                db.collection('users').doc(doc.id).update({ name: m.newName });
+            });
+        }
+
+        // Also update all students in class 8F
+        const snap8f = await db.collection('students').where('kelas', 'in', ['8F', '8f', '8 F', '8 f']).get();
+        snap8f.forEach(doc => {
+            const data = doc.data();
+            if (data.waliKelas !== 'Soufia, S.Pd. Gr') {
+                db.collection('students').doc(doc.id).update({ waliKelas: 'Soufia, S.Pd. Gr' });
+            }
         });
     } catch (e) {
         // Silent catch
