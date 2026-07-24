@@ -22,6 +22,7 @@ function listenStudents() {
         allStudents = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         applyFilters();
         updateClassFilter();
+        updateWaliFilter();
         updateCounters();
         hideLoading();
     }, err => {
@@ -34,6 +35,7 @@ function setupListeners() {
     document.getElementById('search-input').addEventListener('input',
         debounce(() => { currentPage = 1; applyFilters(); }, 300));
     document.getElementById('filter-kelas').addEventListener('change', () => { currentPage = 1; applyFilters(); });
+    document.getElementById('filter-wali').addEventListener('change', () => { currentPage = 1; applyFilters(); });
     document.getElementById('filter-gender').addEventListener('change', () => { currentPage = 1; applyFilters(); });
     document.getElementById('student-form').addEventListener('submit', saveStudent);
 }
@@ -41,6 +43,7 @@ function setupListeners() {
 function applyFilters() {
     const search = document.getElementById('search-input').value.toLowerCase().trim();
     const kelas = document.getElementById('filter-kelas').value;
+    const wali = document.getElementById('filter-wali').value;
     const gender = document.getElementById('filter-gender').value;
 
     filteredStudents = allStudents.filter(s => {
@@ -49,8 +52,9 @@ function applyFilters() {
             (s.nis || '').toLowerCase().includes(search) ||
             (s.waliKelas || '').toLowerCase().includes(search);
         const matchKelas = !kelas || s.kelas === kelas;
+        const matchWali = !wali || s.waliKelas === wali;
         const matchGender = !gender || s.gender === gender;
-        return matchSearch && matchKelas && matchGender;
+        return matchSearch && matchKelas && matchWali && matchGender;
     });
 
     renderTable();
@@ -63,6 +67,15 @@ function updateClassFilter() {
     const cur = sel.value;
     sel.innerHTML = '<option value="">Semua Kelas</option>' +
         classes.map(c => `<option value="${c}" ${c === cur ? 'selected' : ''}>${c}</option>`).join('');
+}
+
+function updateWaliFilter() {
+    const walis = [...new Set(allStudents.map(s => s.waliKelas).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'id'));
+    const sel = document.getElementById('filter-wali');
+    if (!sel) return;
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">Semua Wali Kelas</option>' +
+        walis.map(w => `<option value="${w}" ${w === cur ? 'selected' : ''}>${w}</option>`).join('');
 }
 
 function updateCounters() {
