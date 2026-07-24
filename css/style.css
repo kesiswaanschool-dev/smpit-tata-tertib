@@ -582,6 +582,13 @@ tbody tr:last-child td { border-bottom: none; }
 .badge-orange { background: rgba(249,115,22,0.12); color: #fb923c; border: 1px solid rgba(249,115,22,0.2); }
 .badge-purple { background: rgba(124,58,237,0.12); color: #a78bfa; border: 1px solid rgba(124,58,237,0.2); }
 
+[data-theme="orange"] .badge-red, [data-theme="light"] .badge-red { background: rgba(220,38,38,0.12); color: #991b1b; border: 1px solid rgba(220,38,38,0.25); }
+[data-theme="orange"] .badge-green, [data-theme="light"] .badge-green { background: rgba(5,150,105,0.12); color: #065f46; border: 1px solid rgba(5,150,105,0.25); }
+[data-theme="orange"] .badge-blue, [data-theme="light"] .badge-blue { background: rgba(37,99,235,0.12); color: #1e40af; border: 1px solid rgba(37,99,235,0.25); }
+[data-theme="orange"] .badge-amber, [data-theme="light"] .badge-amber { background: rgba(217,119,6,0.12); color: #92400e; border: 1px solid rgba(217,119,6,0.25); }
+[data-theme="orange"] .badge-orange, [data-theme="light"] .badge-orange { background: rgba(234,88,12,0.12); color: #9a3412; border: 1px solid rgba(234,88,12,0.25); }
+[data-theme="orange"] .badge-purple, [data-theme="light"] .badge-purple { background: rgba(124,58,237,0.12); color: #5b21b6; border: 1px solid rgba(124,58,237,0.25); }
+
 /* ============================================================ 
    BUTTONS 
    ============================================================ */
@@ -728,7 +735,7 @@ select.form-control {
     padding-right: 36px;
 }
 
-select.form-control option { background: #1e293b; color: var(--text); }
+select.form-control option { background: var(--bg-card); color: var(--text); }
 
 textarea.form-control { resize: vertical; min-height: 80px; }
 
@@ -756,9 +763,9 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     position: absolute;
     top: calc(100% + 4px);
     left: 0; right: 0;
-    background: #1a2438;
+    background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 12px;
     max-height: 220px;
     overflow-y: auto;
     z-index: 500;
@@ -769,7 +776,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 .autocomplete-list.show { display: block; }
 
 .autocomplete-item {
-    padding: 10px 14px;
+    padding: 11px 14px;
     cursor: pointer;
     font-size: 13px;
     display: flex;
@@ -780,7 +787,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 }
 
 .autocomplete-item:last-child { border-bottom: none; }
-.autocomplete-item:hover { background: rgba(37,99,235,0.15); }
+.autocomplete-item:hover { background: var(--glass-hover); }
 .autocomplete-item .item-name { font-weight: 600; color: var(--text); }
 .autocomplete-item .item-sub { font-size: 11px; color: var(--text-muted); }
 
@@ -805,7 +812,8 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 .modal-overlay.show { opacity: 1; visibility: visible; }
 
 .modal {
-    background: #0e1929;
+    background: var(--bg-card);
+    color: var(--text);
     border: 1px solid var(--border);
     border-radius: 20px;
     padding: 28px;
@@ -815,6 +823,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     max-height: 90vh;
     overflow-y: auto;
+    box-shadow: var(--shadow-lg);
 }
 
 .modal-overlay.show .modal { transform: scale(1) translateY(0); }
@@ -826,7 +835,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     margin-bottom: 22px;
 }
 
-.modal-title { font-size: 18px; font-weight: 700; }
+.modal-title { font-size: 18px; font-weight: 700; color: var(--text); }
 
 .modal-close {
     background: none; border: none;
@@ -859,12 +868,14 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 }
 
 .toast {
-    background: #131f35;
+    background: var(--bg-card);
+    color: var(--text);
+    border: 1px solid var(--border);
     border-radius: 12px;
     padding: 14px 18px;
     display: flex; align-items: center; gap: 12px;
     min-width: 280px; max-width: 380px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    box-shadow: var(--shadow-lg);
     border-left: 4px solid var(--primary-light);
     animation: toastIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     pointer-events: all;
