@@ -243,6 +243,7 @@ function renderReportTable() {
         const achColor = r.achPoin > 0 ? '#34d399' : '#94a3b8';
         const netColor = r.status.color;
         const barPct = Math.min(100, (r.netPoin / 150) * 100);
+        const isCleanWithAch = (r.violPoin === 0 && r.achPoin > 0);
 
         return `<tr>
             <td class="td-muted">${start+i+1}</td>
@@ -263,6 +264,7 @@ function renderReportTable() {
                         <div class="point-bar-fill" style="width:${barPct}%;background:${netColor}"></div>
                     </div>
                 </div>
+                ${isCleanWithAch ? `<div style="font-size:11px;color:#34d399;font-weight:600;margin-top:3px">⭐ Simpanan Prestasi: ${r.achPoin} poin</div>` : ''}
             </td>
             <td><span class="badge ${r.status.class}">${r.status.text}</span></td>
         </tr>`;
@@ -413,7 +415,9 @@ function exportReport() {
         'Jumlah Pelanggaran': r.violCount,
         'Poin Pelanggaran': r.violPoin,
         'Poin Prestasi': r.achPoin,
-        'Saldo Poin': r.netPoin,
+        'Saldo Poin': (r.violPoin === 0 && r.achPoin > 0)
+            ? `0 (Simpanan Prestasi: ${r.achPoin} poin)`
+            : r.netPoin,
         'Status': r.status.text
     }));
     downloadExcel(data, `laporan_${periodLabel.replace(/\s+/g,'_')}_${today()}.xls`, 'Laporan');

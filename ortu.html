@@ -486,6 +486,7 @@
                 <div class="point-bar" style="margin-top: 12px;">
                     <div class="point-bar-fill" id="student-point-bar-fill" style="width: 0%;"></div>
                 </div>
+                <div id="stat-net-subtext" style="font-size:11px;color:#34d399;font-weight:600;margin-top:6px;display:none;"></div>
             </div>
         </div>
 
@@ -649,6 +650,14 @@
             // Highlight net card background border to status color
             const netCard = document.getElementById('stat-net-card');
             netCard.style.borderColor = status.color + '66'; // add transparency to color
+
+            const netSubtext = document.getElementById('stat-net-subtext');
+            if (totalViolPoin === 0 && totalAchPoin > 0) {
+                netSubtext.textContent = `⭐ Simpanan Prestasi: ${totalAchPoin} poin`;
+                netSubtext.style.display = 'block';
+            } else {
+                netSubtext.style.display = 'none';
+            }
 
             // Render tables
             const violTbody = document.getElementById('viol-tbody');
