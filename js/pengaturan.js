@@ -366,7 +366,7 @@ function renderATypeTable() {
             <td class="td-muted">${i+1}</td>
             <td><span class="badge badge-green">${v.category || '-'}</span></td>
             <td>${v.name || '-'}</td>
-            <td><span class="badge badge-blue" style="font-weight:700">-${v.score || 0} poin</span></td>
+            <td><span class="badge badge-blue" style="font-weight:700">${v.score || 0} poin</span></td>
             <td>
                 <button class="btn btn-xs btn-danger" onclick="deleteAType('${v.id}','${(v.name||'').replace(/'/g,"\\'")}')">🗑️</button>
             </td>

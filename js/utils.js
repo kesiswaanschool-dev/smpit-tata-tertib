@@ -128,10 +128,12 @@ function getPointStatus(netPoints) {
 // --- Excel Utilities (requires SheetJS) ---
 function downloadExcel(data, filename, sheetName = 'Data') {
     if (typeof XLSX === 'undefined') { showToast('SheetJS tidak tersedia', 'error'); return; }
+    // Enforce .xls extension
+    const finalFilename = filename.replace(/\.xlsx$/i, '.xls').replace(/\.csv$/i, '.xls');
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, sheetName);
-    XLSX.writeFile(wb, filename);
+    XLSX.writeFile(wb, finalFilename, { bookType: 'biff8' });
 }
 
 function downloadStudentTemplate() {
@@ -181,15 +183,15 @@ function downloadStudentTemplate() {
         ['CATATAN:'],
         ['- Baris 1 (header) jangan dihapus atau diubah judulnya'],
         ['- Data diisi mulai dari baris ke-2'],
-        ['- Simpan file dalam format .xlsx sebelum diimport'],
+        ['- Simpan file dalam format .xls atau .xlsx sebelum diimport (bukan .csv)'],
         ['- Hapus baris contoh sebelum diimport (baris 2-4)'],
     ];
     const wsInstr = XLSX.utils.aoa_to_sheet(instrData);
     wsInstr['!cols'] = [{ wch: 25 }, { wch: 45 }, { wch: 35 }];
     XLSX.utils.book_append_sheet(wb, wsInstr, 'Petunjuk');
 
-    XLSX.writeFile(wb, 'template_data_siswa_SMPIT_Nurul_Muhajirin.xlsx');
-    showToast('Template Excel berhasil diunduh! Buka sheet "Petunjuk" untuk panduan.', 'success', 5000);
+    XLSX.writeFile(wb, 'template_data_siswa_SMPIT_Nurul_Muhajirin.xls', { bookType: 'biff8' });
+    showToast('Template Excel (.xls) berhasil diunduh! Buka sheet "Petunjuk" untuk panduan.', 'success', 5000);
 }
 
 // --- Debounce ---

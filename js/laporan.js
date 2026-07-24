@@ -254,7 +254,7 @@ function renderReportTable() {
                 <span style="font-weight:700;color:${violColor};font-size:14px">${r.violPoin}</span>
             </td>
             <td class="text-center">
-                <span style="font-weight:700;color:${achColor};font-size:14px">−${r.achPoin}</span>
+                <span style="font-weight:700;color:${achColor};font-size:14px">${r.achPoin}</span>
             </td>
             <td>
                 <div style="display:flex;align-items:center;gap:8px">
@@ -416,8 +416,8 @@ function exportReport() {
         'Saldo Poin': r.netPoin,
         'Status': r.status.text
     }));
-    downloadExcel(data, `laporan_${periodLabel.replace(/\s+/g,'_')}_${today()}.xlsx`, 'Laporan');
-    showToast(`Laporan ${data.length} murid berhasil diexport`, 'success');
+    downloadExcel(data, `laporan_${periodLabel.replace(/\s+/g,'_')}_${today()}.xls`, 'Laporan');
+    showToast(`Laporan ${data.length} murid berhasil diexport (.xls)`, 'success');
 }
 
 function printReport() {

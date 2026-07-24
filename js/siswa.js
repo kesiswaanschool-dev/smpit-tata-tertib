@@ -294,6 +294,24 @@ async function importExcel(input) {
     }
 }
 
+// --- Excel Export Students ---
+function exportStudents() {
+    if (filteredStudents.length === 0) {
+        showToast('Tidak ada data murid untuk diexport', 'warning');
+        return;
+    }
+    const data = filteredStudents.map((s, i) => ({
+        'No': i + 1,
+        'Nama Murid': s.nama || '',
+        'NIS': s.nis || '',
+        'Kelas': s.kelas || '',
+        'Wali Kelas': s.waliKelas || '',
+        'Jenis Kelamin': s.gender === 'L' ? 'Laki-laki' : (s.gender === 'P' ? 'Perempuan' : '')
+    }));
+    downloadExcel(data, `data_siswa_${today()}.xls`, 'Data Siswa');
+    showToast(`${data.length} data murid berhasil diexport (.xls)`, 'success');
+}
+
 // --- Helpers ---
 function escHtml(str) {
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');

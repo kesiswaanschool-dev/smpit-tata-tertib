@@ -38,12 +38,15 @@
                 <div class="section-title">📋 Daftar Murid</div>
                 <div style="display:flex;gap:8px;flex-wrap:wrap">
                     <button class="btn btn-outline btn-sm" onclick="downloadStudentTemplate()">
-                        📥 Download Template Excel
+                        📥 Template Excel (.xls)
+                    </button>
+                    <button class="btn btn-success btn-sm" onclick="exportStudents()">
+                        📥 Export Excel (.xls)
                     </button>
                     <label class="btn btn-outline btn-sm" style="cursor:pointer" for="import-excel">
                         📤 Import Excel
                     </label>
-                    <input type="file" id="import-excel" accept=".xlsx,.xls" style="display:none" onchange="importExcel(this)">
+                    <input type="file" id="import-excel" accept=".xls,.xlsx" style="display:none" onchange="importExcel(this)">
                     <button class="btn btn-primary btn-sm" onclick="openAddModal()">
                         ➕ Tambah Murid
                     </button>

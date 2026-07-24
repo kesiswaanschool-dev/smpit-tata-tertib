@@ -268,7 +268,7 @@ function renderRecentList(items) {
                 <div style="font-size:11px;color:var(--text-muted)">${a.achievementType || '-'}</div>
                 <div style="margin-top:3px"><span class="badge ${categoryColors[a.category] || 'badge-blue'}" style="font-size:10px">${a.category || '-'}</span></div>
             </div>
-            <span class="badge badge-green">−${a.score || 0}</span>
+            <span class="badge badge-green">${a.score || 0}</span>
         </div>`).join('');
 }
 
@@ -331,7 +331,7 @@ function renderHistTable() {
             <td><span class="badge badge-blue">${a.kelas || '-'}</span></td>
             <td style="max-width:200px;white-space:normal;font-size:12px">${a.achievementType || '-'}</td>
             <td><span class="badge ${categoryColors[a.category] || 'badge-blue'}">${a.category || '-'}</span></td>
-            <td><span class="badge badge-green" style="font-size:13px;font-weight:800">−${a.score || 0}</span></td>
+            <td><span class="badge badge-green" style="font-size:13px;font-weight:800">${a.score || 0}</span></td>
             <td class="td-muted" style="font-size:12px">${a.notes || '—'}</td>
             <td class="td-muted">${a.recordedBy || '-'}</td>
             ${admin ? `<td><button class="btn btn-xs btn-danger" onclick="deleteAchievement('${a.id}')">🗑️</button></td>` : ''}
@@ -400,6 +400,6 @@ function exportAchievements() {
         'Keterangan': a.notes || '',
         'Dicatat Oleh': a.recordedBy || ''
     }));
-    downloadExcel(data, `prestasi_${today()}.xlsx`, 'Prestasi');
-    showToast(`${data.length} data berhasil diexport`, 'success');
+    downloadExcel(data, `prestasi_${today()}.xls`, 'Prestasi');
+    showToast(`${data.length} data berhasil diexport (.xls)`, 'success');
 }

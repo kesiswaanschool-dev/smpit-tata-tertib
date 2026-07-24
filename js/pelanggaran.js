@@ -374,6 +374,6 @@ function exportViolations() {
         'Keterangan': v.notes || '',
         'Dicatat Oleh': v.recordedBy || ''
     }));
-    downloadExcel(data, `pelanggaran_${today()}.xlsx`, 'Pelanggaran');
-    showToast(`${data.length} data berhasil diexport`, 'success');
+    downloadExcel(data, `pelanggaran_${today()}.xls`, 'Pelanggaran');
+    showToast(`${data.length} data berhasil diexport (.xls)`, 'success');
 }
