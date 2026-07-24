@@ -652,8 +652,9 @@
             netCard.style.borderColor = status.color + '66'; // add transparency to color
 
             const netSubtext = document.getElementById('stat-net-subtext');
-            if (totalViolPoin === 0 && totalAchPoin > 0) {
-                netSubtext.textContent = `⭐ Simpanan Prestasi: ${totalAchPoin} poin`;
+            const sisaPrestasi = Math.max(0, totalAchPoin - totalViolPoin);
+            if (sisaPrestasi > 0) {
+                netSubtext.textContent = `⭐ Simpanan Prestasi: ${sisaPrestasi} poin`;
                 netSubtext.style.display = 'block';
             } else {
                 netSubtext.style.display = 'none';
