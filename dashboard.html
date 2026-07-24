@@ -7,6 +7,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('smpit_theme') || 'orange';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
 </head>
 <body>
     <div id="sidebar-container"></div>
@@ -22,6 +28,9 @@
                 </div>
             </div>
             <div class="topbar-right">
+                <button class="theme-toggle-btn" onclick="cycleTheme()" title="Ganti Warna Tampilan">
+                    <span id="theme-btn-text">🎨 Tema</span>
+                </button>
                 <div class="topbar-badge" style="display:flex;align-items:center;gap:6px"><img src="logo.png" alt="Logo" style="width:20px;height:20px;object-fit:contain;border-radius:50%"> SMPIT Nurul Muhajirin</div>
                 <div class="topbar-user">
                     <div class="user-meta">

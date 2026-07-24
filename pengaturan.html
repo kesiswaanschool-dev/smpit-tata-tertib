@@ -7,6 +7,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('smpit_theme') || 'orange';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
 </head>
 <body>
     <div id="sidebar-container"></div>
@@ -17,10 +23,13 @@
                 <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
                 <div class="topbar-title">
                     <h1>⚙️ Pengaturan</h1>
-                    <p>Kelola akun guru dan jenis pelanggaran</p>
+                    <p>Kelola akun guru, jenis pelanggaran, dan tampilan</p>
                 </div>
             </div>
             <div class="topbar-right">
+                <button class="theme-toggle-btn" onclick="cycleTheme()" title="Ganti Warna Tampilan">
+                    <span id="theme-btn-text">🎨 Tema</span>
+                </button>
                 <div class="topbar-user">
                     <div class="user-meta">
                         <div class="name" id="user-display-name">—</div>
@@ -35,6 +44,7 @@
             <button class="tab-btn active" id="tab-guru" onclick="switchTab('guru')">👩‍🏫 Akun Guru</button>
             <button class="tab-btn" id="tab-vtype" onclick="switchTab('vtype')">📝 Jenis Pelanggaran</button>
             <button class="tab-btn" id="tab-atype" onclick="switchTab('atype')">🏆 Jenis Prestasi</button>
+            <button class="tab-btn" id="tab-theme" onclick="switchTab('theme')">🎨 Tema Tampilan</button>
             <button class="tab-btn" id="tab-db" onclick="switchTab('db')">🗄️ Database / Firebase</button>
         </div>
 
@@ -199,6 +209,35 @@
             </div>
         </div>
 
+
+        <!-- Tab: Theme Settings -->
+        <div id="content-theme" style="display:none">
+            <div class="card" style="margin-bottom:20px">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">🎨 Pengaturan Tema & Warna Tampilan</div>
+                        <p style="font-size:12px;color:var(--text-muted);margin-top:2px">Pilih skema warna tampilan aplikasi sesuai kenyamanan Anda</p>
+                    </div>
+                </div>
+                <div class="theme-options-grid">
+                    <div class="theme-card-option" data-theme="orange" onclick="setTheme('orange')">
+                        <div class="theme-preview-circle" style="background:#fff8f0;border:2px solid #ea580c;color:#ea580c">🍊</div>
+                        <div style="font-weight:700;font-size:14px">Orange Muda</div>
+                        <div style="font-size:11px;color:var(--text-muted)">Default · Hangat & Cerah</div>
+                    </div>
+                    <div class="theme-card-option" data-theme="dark" onclick="setTheme('dark')">
+                        <div class="theme-preview-circle" style="background:#0a0f1e;border:2px solid #2563eb;color:#f59e0b">🌙</div>
+                        <div style="font-weight:700;font-size:14px">Dark Mode</div>
+                        <div style="font-size:11px;color:var(--text-muted)">Gelap & Modern</div>
+                    </div>
+                    <div class="theme-card-option" data-theme="light" onclick="setTheme('light')">
+                        <div class="theme-preview-circle" style="background:#f8fafc;border:2px solid #3b82f6;color:#3b82f6">☀️</div>
+                        <div style="font-weight:700;font-size:14px">Light Clean</div>
+                        <div style="font-size:11px;color:var(--text-muted)">Terang & Minimalis</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Tab: Database Configuration -->
         <div id="content-db" style="display:none">

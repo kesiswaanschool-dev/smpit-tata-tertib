@@ -31,11 +31,13 @@ function switchTab(tab) {
     document.getElementById('content-guru').style.display = tab === 'guru' ? 'block' : 'none';
     document.getElementById('content-vtype').style.display = tab === 'vtype' ? 'block' : 'none';
     document.getElementById('content-atype').style.display = tab === 'atype' ? 'block' : 'none';
+    document.getElementById('content-theme').style.display = tab === 'theme' ? 'block' : 'none';
     document.getElementById('content-db').style.display = tab === 'db' ? 'block' : 'none';
     
     document.getElementById('tab-guru').classList.toggle('active', tab === 'guru');
     document.getElementById('tab-vtype').classList.toggle('active', tab === 'vtype');
     document.getElementById('tab-atype').classList.toggle('active', tab === 'atype');
+    document.getElementById('tab-theme').classList.toggle('active', tab === 'theme');
     document.getElementById('tab-db').classList.toggle('active', tab === 'db');
 }
 

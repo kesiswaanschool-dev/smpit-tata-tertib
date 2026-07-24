@@ -2,6 +2,39 @@
 // UTILITY FUNCTIONS
 // ================================================================
 
+// --- Theme Manager ---
+function initTheme() {
+    const savedTheme = localStorage.getItem('smpit_theme') || 'orange';
+    setTheme(savedTheme, false);
+}
+
+function setTheme(theme, notify = true) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('smpit_theme', theme);
+
+    const icons = { orange: '🍊 Orange', dark: '🌙 Dark', light: '☀️ Light' };
+    const btnText = document.getElementById('theme-btn-text');
+    if (btnText) btnText.textContent = icons[theme] || '🎨 Tema';
+
+    const themeCards = document.querySelectorAll('.theme-card-option');
+    themeCards.forEach(c => {
+        if (c.dataset.theme === theme) c.classList.add('active');
+        else c.classList.remove('active');
+    });
+
+    if (notify) showToast(`Warna tampilan diubah ke ${icons[theme] || theme}`, 'success');
+}
+
+function cycleTheme() {
+    const current = localStorage.getItem('smpit_theme') || 'orange';
+    const themes = ['orange', 'dark', 'light'];
+    const nextIndex = (themes.indexOf(current) + 1) % themes.length;
+    setTheme(themes[nextIndex]);
+}
+
+// Apply theme on script load
+initTheme();
+
 // --- Toast Notifications ---
 function showToast(message, type = 'info', duration = 3500) {
     const container = document.getElementById('toast-container');
