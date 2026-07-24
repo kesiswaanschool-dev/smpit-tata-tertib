@@ -241,7 +241,7 @@ function renderTodayList(items) {
                 <div style="font-size:13px;font-weight:600">${v.studentName || '-'}</div>
                 <div style="font-size:11px;color:var(--text-muted)">${v.violationType || '-'} · Kelas ${v.kelas || '-'}</div>
             </div>
-            <span class="badge badge-red">+${v.score || 0}</span>
+            <span class="badge badge-red">${v.score || 0}</span>
         </div>`).join('') + (items.length > 8 ? `<div class="text-center text-muted" style="padding:8px;font-size:12px">+${items.length-8} lainnya</div>` : '');
 }
 
@@ -305,7 +305,7 @@ function renderHistTable() {
             <td><span class="badge badge-blue">${v.kelas || '-'}</span></td>
             <td style="max-width:200px;white-space:normal;font-size:12px">${v.violationType || '-'}</td>
             <td><span class="badge badge-amber">${v.category || '-'}</span></td>
-            <td><span class="badge badge-red" style="font-size:13px;font-weight:800">+${v.score || 0}</span></td>
+            <td><span class="badge badge-red" style="font-size:13px;font-weight:800">${v.score || 0}</span></td>
             <td class="td-muted" style="max-width:150px;font-size:12px">${v.notes || '—'}</td>
             <td class="td-muted">${v.recordedBy || '-'}</td>
             ${admin ? `<td><button class="btn btn-xs btn-danger" onclick="deleteViolation('${v.id}')">🗑️</button></td>` : ''}
