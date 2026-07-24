@@ -74,7 +74,7 @@ function renderGuruTable() {
                 </span>
             </td>
             <td>
-                <button class="btn btn-xs btn-danger" onclick="deleteGuru('${g.id}','${g.name || ''}')">🗑️ Hapus</button>
+                <button class="btn btn-xs btn-danger" onclick="deleteGuru('${g.id}')">🗑️ Hapus</button>
             </td>
         </tr>`).join('');
 }
@@ -118,8 +118,10 @@ async function addGuruAccount(e) {
     }
 }
 
-async function deleteGuru(id, name) {
-    const ok = await confirmAction(`Hapus akun guru <strong>${name}</strong>?`);
+async function deleteGuru(id) {
+    const guru = allGuruAccounts.find(g => g.id === id);
+    const name = guru ? guru.name : 'guru ini';
+    const ok = await confirmAction(`Hapus akun guru <strong>${escHtml(name)}</strong>?`);
     if (!ok) return;
     try {
         await db.collection('users').doc(id).delete();

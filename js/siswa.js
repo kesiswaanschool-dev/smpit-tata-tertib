@@ -120,7 +120,7 @@ function renderTable() {
             <td>
                 <div style="display:flex;gap:6px">
                     <button class="btn btn-sm btn-outline" onclick="openEditModal('${s.id}')">✏️</button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteStudent('${s.id}','${escHtml(s.nama || '')}')">🗑️</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteStudent('${s.id}')">🗑️</button>
                 </div>
             </td>
         </tr>`;
@@ -228,8 +228,10 @@ async function saveStudent(e) {
     }
 }
 
-async function deleteStudent(id, nama) {
-    const ok = await confirmAction(`Hapus murid <strong>${nama}</strong>? Data pelanggaran dan prestasi akan tetap tersimpan.`);
+async function deleteStudent(id) {
+    const student = allStudents.find(s => s.id === id);
+    const nama = student ? student.nama : 'murid ini';
+    const ok = await confirmAction(`Hapus murid <strong>${escHtml(nama)}</strong>? Data pelanggaran dan prestasi akan tetap tersimpan.`);
     if (!ok) return;
 
     try {
