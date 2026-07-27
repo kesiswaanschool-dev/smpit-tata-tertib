@@ -438,6 +438,50 @@ async function deleteAllStudents() {
     }
 }
 
+// --- Hapus Data Duplikat ---
+async function deduplicateStudents() {
+    const seen = new Map();
+    const duplicates = [];
+
+    for (const s of allStudents) {
+        const key = s.nis ? s.nis.toString().trim() : (s.nama || '').trim() + '|' + (s.kelas || '').trim();
+        if (seen.has(key)) {
+            duplicates.push(s.id);
+        } else {
+            seen.set(key, s);
+        }
+    }
+
+    if (duplicates.length === 0) {
+        showToast('Tidak ditemukan data duplikat', 'success');
+        return;
+    }
+
+    const ok = await confirmAction(
+        `Ditemukan <strong>${duplicates.length} data duplikat</strong>.<br><br>` +
+        `Hapus semua duplikat? Data dengan NIS/Nama yang sama hanya akan menyisakan 1 data.`
+    );
+    if (!ok) return;
+
+    showLoading('Menghapus data duplikat...');
+
+    try {
+        let deleted = 0;
+        for (let i = 0; i < duplicates.length; i += 400) {
+            const batch = db.batch();
+            const chunk = duplicates.slice(i, i + 400);
+            chunk.forEach(id => batch.delete(db.collection('students').doc(id)));
+            await batch.commit();
+            deleted += chunk.length;
+        }
+        showToast(`${deleted} data duplikat berhasil dihapus`, 'success');
+    } catch (err) {
+        showToast('Gagal menghapus duplikat: ' + err.message, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
 // --- Helpers ---
 function escHtml(str) {
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
