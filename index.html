@@ -127,24 +127,25 @@
 
         /* Card */
         .login-card {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--bg-card, rgba(255,255,255,0.08));
+            border: 1px solid var(--border, rgba(255,255,255,0.1));
             border-radius: 22px;
             padding: 32px;
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
-            box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+            box-shadow: var(--shadow-lg, 0 24px 80px rgba(0,0,0,0.5));
         }
 
         .login-card h2 {
             font-size: 20px;
             font-weight: 700;
+            color: var(--text);
             margin-bottom: 6px;
         }
 
         .login-card .subtitle {
             font-size: 13px;
-            color: #64748b;
+            color: var(--text-muted);
             margin-bottom: 28px;
         }
 
@@ -154,7 +155,7 @@
             display: block;
             font-size: 12.5px;
             font-weight: 600;
-            color: #94a3b8;
+            color: var(--text-secondary, #94a3b8);
             margin-bottom: 8px;
         }
 
@@ -165,17 +166,17 @@
             left: 14px; top: 50%;
             transform: translateY(-50%);
             font-size: 17px;
-            color: #475569;
+            color: var(--text-muted, #64748b);
             pointer-events: none;
         }
 
         .input-wrap input {
             width: 100%;
             padding: 12px 14px 12px 44px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--bg-card, rgba(255,255,255,0.08));
+            border: 1px solid var(--border, rgba(255,255,255,0.15));
             border-radius: 12px;
-            color: #f1f5f9;
+            color: var(--text, #f1f5f9);
             font-size: 14px;
             font-family: 'Inter', sans-serif;
             transition: all 0.25s ease;
@@ -183,23 +184,23 @@
 
         .input-wrap input:focus {
             outline: none;
-            border-color: rgba(37,99,235,0.6);
-            background: rgba(37,99,235,0.06);
+            border-color: var(--primary-light, rgba(37,99,235,0.6));
+            background: var(--bg-secondary, rgba(37,99,235,0.06));
             box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
         }
 
-        .input-wrap input::placeholder { color: #475569; }
+        .input-wrap input::placeholder { color: var(--text-muted, #64748b); }
 
         .toggle-pass {
             position: absolute;
             right: 12px; top: 50%;
             transform: translateY(-50%);
             background: none; border: none;
-            color: #475569; cursor: pointer;
+            color: var(--text-muted, #64748b); cursor: pointer;
             font-size: 17px; padding: 4px;
             transition: color 0.2s;
         }
-        .toggle-pass:hover { color: #94a3b8; }
+        .toggle-pass:hover { color: var(--text-secondary, #94a3b8); }
 
         .btn-login {
             width: 100%;
@@ -243,7 +244,7 @@
             text-align: center;
             margin-top: 24px;
             font-size: 12px;
-            color: #334155;
+            color: var(--text-muted, #334155);
         }
 
         /* Role info */
