@@ -258,6 +258,13 @@ async function saveStudent(e) {
             await db.collection('students').doc(editId).update(data);
             showToast('Data murid berhasil diperbarui', 'success');
         } else {
+            // Cek duplikat berdasarkan NIS
+            if (nis && allStudents.some(s => s.nis === nis)) {
+                showToast(`NIS "${nis}" sudah terdaftar untuk murid lain`, 'error');
+                btn.disabled = false;
+                btn.textContent = '💾 Simpan';
+                return;
+            }
             data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
             await db.collection('students').add(data);
             showToast('Murid berhasil ditambahkan', 'success');
@@ -305,11 +312,20 @@ async function importExcel(input) {
             return;
         }
 
+        // Build lookup map for existing students by NIS
+        const existingByNis = new Map();
+        const existingByNamaKelas = new Map();
+        allStudents.forEach(s => {
+            if (s.nis) existingByNis.set(s.nis.toString().trim(), s);
+            const key = (s.nama || '').trim() + '|' + (s.kelas || '').trim();
+            existingByNamaKelas.set(key, s);
+        });
+
         const batch = db.batch();
-        let count = 0;
+        let added = 0;
+        let skipped = 0;
 
         rows.forEach(row => {
-            // Support both new format (with No column) and old format
             const nama = (row['Nama Murid'] || '').toString().trim();
             const kelas = (row['Kelas'] || '').toString().trim();
             const waliKelas = (row['Wali Kelas'] || '').toString().trim();
@@ -322,6 +338,16 @@ async function importExcel(input) {
             if (!nama || nama.startsWith('(') || nama === 'Nama Murid') return;
             if (!kelas) return;
 
+            // Check for duplicates
+            const duplicate = nis
+                ? existingByNis.has(nis)
+                : existingByNamaKelas.has(nama + '|' + kelas);
+
+            if (duplicate) {
+                skipped++;
+                return;
+            }
+
             const ref = db.collection('students').doc();
             batch.set(ref, {
                 nama,
@@ -332,18 +358,19 @@ async function importExcel(input) {
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp()
             });
-            count++;
+            added++;
         });
 
-        if (count === 0) {
-            showToast('Tidak ada data valid yang ditemukan di Excel', 'warning');
+        if (added === 0) {
+            showToast(`Tidak ada data baru — ${skipped} data sudah terdaftar`, 'warning');
             hideLoading();
             input.value = '';
             return;
         }
 
         await batch.commit();
-        showToast(`${count} murid berhasil diimport`, 'success');
+        const msg = `${added} murid berhasil diimport` + (skipped > 0 ? `, ${skipped} dilewati (sudah terdaftar)` : '');
+        showToast(msg, 'success');
     } catch (err) {
         showToast('Gagal import: ' + err.message, 'error');
     } finally {
@@ -368,6 +395,47 @@ function exportStudents() {
     }));
     downloadExcel(data, `data_siswa_${today()}.xls`, 'Data Siswa');
     showToast(`${data.length} data murid berhasil diexport (.xls)`, 'success');
+}
+
+// --- Hapus Semua Data ---
+async function deleteAllStudents() {
+    const total = allStudents.length;
+    if (total === 0) {
+        showToast('Tidak ada data murid untuk dihapus', 'warning');
+        return;
+    }
+
+    const ok = await confirmAction(
+        `Hapus <strong>semua ${total} murid</strong>?<br><br>` +
+        `Tindakan ini akan menghapus seluruh data murid dari database. ` +
+        `Data pelanggaran dan prestasi tidak ikut terhapus.`
+    );
+    if (!ok) return;
+
+    showLoading('Menghapus semua data murid...');
+
+    try {
+        const batch = db.batch();
+        const students = [...allStudents];
+        let deleted = 0;
+
+        for (const s of students) {
+            batch.delete(db.collection('students').doc(s.id));
+            deleted++;
+            if (deleted % 400 === 0) {
+                await batch.commit();
+            }
+        }
+        if (deleted % 400 !== 0) {
+            await batch.commit();
+        }
+
+        showToast(`${deleted} murid berhasil dihapus`, 'success');
+    } catch (err) {
+        showToast('Gagal menghapus: ' + err.message, 'error');
+    } finally {
+        hideLoading();
+    }
 }
 
 // --- Helpers ---
