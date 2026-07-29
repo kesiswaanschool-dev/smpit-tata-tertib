@@ -25,6 +25,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('atype-form').addEventListener('submit', addAchievementType);
     document.getElementById('at-filter-cat').addEventListener('change', renderATypeTable);
+
+    document.getElementById('admin-cred-form').addEventListener('submit', saveAdminCreds);
+    document.getElementById('btn-reset-admin').addEventListener('click', resetAdminCreds);
 });
 
 function switchTab(tab) {
@@ -32,13 +35,23 @@ function switchTab(tab) {
     document.getElementById('content-vtype').style.display = tab === 'vtype' ? 'block' : 'none';
     document.getElementById('content-atype').style.display = tab === 'atype' ? 'block' : 'none';
     document.getElementById('content-theme').style.display = tab === 'theme' ? 'block' : 'none';
+    document.getElementById('content-admin').style.display = tab === 'admin' ? 'block' : 'none';
     document.getElementById('content-db').style.display = tab === 'db' ? 'block' : 'none';
     
     document.getElementById('tab-guru').classList.toggle('active', tab === 'guru');
     document.getElementById('tab-vtype').classList.toggle('active', tab === 'vtype');
     document.getElementById('tab-atype').classList.toggle('active', tab === 'atype');
     document.getElementById('tab-theme').classList.toggle('active', tab === 'theme');
+    document.getElementById('tab-admin').classList.toggle('active', tab === 'admin');
     document.getElementById('tab-db').classList.toggle('active', tab === 'db');
+
+    if (tab === 'admin') refreshAdminDisplay();
+}
+
+function refreshAdminDisplay() {
+    const admin = _adminCred();
+    const el = document.getElementById('current-admin-user');
+    if (el) el.textContent = admin.username;
 }
 
 
@@ -129,6 +142,44 @@ async function deleteGuru(id) {
     } catch (e) {
         showToast('Gagal menghapus: ' + e.message, 'error');
     }
+}
+
+async function saveAdminCreds(e) {
+    e.preventDefault();
+    const username = document.getElementById('admin-username').value.trim();
+    const password = document.getElementById('admin-password').value;
+    const confirm = document.getElementById('admin-password-confirm').value;
+
+    if (!username || !password) {
+        showToast('Harap isi username dan password', 'warning');
+        return;
+    }
+    if (password.length < 6) {
+        showToast('Password minimal 6 karakter', 'warning');
+        return;
+    }
+    if (password !== confirm) {
+        showToast('Password tidak cocok', 'warning');
+        return;
+    }
+
+    const k = _dK();
+    const encUser = [...username].map((c, i) => c.charCodeAt(0) ^ k.charCodeAt(i % k.length));
+    const encPass = [...password].map((c, i) => c.charCodeAt(0) ^ k.charCodeAt(i % k.length));
+
+    localStorage.setItem('smpit_admin_creds', JSON.stringify({ _U: encUser, _P: encPass }));
+
+    localStorage.setItem('smpit_admin_creds', JSON.stringify({ _U: encUser, _P: encPass }));
+    showToast('✅ Kredensial admin berhasil diperbarui! Silakan logout dan login ulang.', 'success');
+    document.getElementById('admin-cred-form').reset();
+}
+
+async function resetAdminCreds() {
+    const ok = await confirmAction('Reset kredensial admin ke default? Username default akan dihapus dari localStorage.', 'Reset');
+    if (!ok) return;
+    localStorage.removeItem('smpit_admin_creds');
+    showToast('🔄 Kredensial admin direset ke default. Silakan refresh halaman.', 'success');
+    document.getElementById('admin-cred-form').reset();
 }
 
 // ---- VIOLATION TYPES ----

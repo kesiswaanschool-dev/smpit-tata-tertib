@@ -24,6 +24,18 @@ const _P = [5,36,60,37,53,44,47,24,2,0,30,49,44,71,75];
 
 function _adminCred() {
     const k = _dK();
+    const saved = localStorage.getItem('smpit_admin_creds');
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            return {
+                username: _dV(parsed._U, k),
+                password: _dV(parsed._P, k),
+                name: 'Administrator',
+                role: 'admin'
+            };
+        } catch { /* fall through to default */ }
+    }
     return {
         username: _dV(_U, k),
         password: _dV(_P, k),
