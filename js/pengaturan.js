@@ -2,6 +2,10 @@
 // SETTINGS PAGE (ADMIN ONLY)
 // ================================================================
 
+function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 let allViolationTypes = [];
 let allGuruAccounts = [];
 let allAchievementTypes = [];
