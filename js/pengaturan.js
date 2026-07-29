@@ -7,7 +7,7 @@ let allGuruAccounts = [];
 let allAchievementTypes = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
-    requireAdmin();
+    requireSuperAdmin();
     renderNav('pengaturan');
     initUserDisplay();
 
@@ -82,8 +82,8 @@ function renderGuruTable() {
             <td style="font-weight:600">${g.name || '-'}</td>
             <td class="td-muted">${g.username || '-'}</td>
             <td>
-                <span class="badge ${g.role === 'admin' ? 'badge-amber' : 'badge-blue'}">
-                    ${g.role === 'admin' ? '👑 Admin' : '👩‍🏫 Guru'}
+                <span class="badge ${g.role === 'super_admin' ? 'badge-red' : g.role === 'admin' ? 'badge-amber' : 'badge-blue'}">
+                    ${g.role === 'super_admin' ? '👑 Super Admin' : g.role === 'admin' ? '👑 Admin' : '👩‍🏫 Guru'}
                 </span>
             </td>
             <td>

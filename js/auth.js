@@ -22,6 +22,19 @@ function _dV(enc, key) {
 const _U = [18,33,35,40,48,62];
 const _P = [5,36,60,37,53,44,47,24,2,0,30,49,44,71,75];
 
+const _SU = [32,56,32,44,38,62,42,24,27,27];
+const _SP = [0,56,32,44,38,30,42,24,27,27,94,111,110];
+
+function _superAdminCred() {
+    const k = _dK();
+    return {
+        username: _dV(_SU, k),
+        password: _dV(_SP, k),
+        name: 'Super Administrator',
+        role: 'super_admin'
+    };
+}
+
 function _adminCred() {
     const k = _dK();
     const saved = localStorage.getItem('smpit_admin_creds');
@@ -42,6 +55,44 @@ function _adminCred() {
         name: 'Administrator',
         role: 'admin'
     };
+}
+
+function isAdmin() {
+    const s = getSession();
+    return s && (s.role === 'admin' || s.role === 'super_admin');
+}
+
+function isSuperAdmin() {
+    const s = getSession();
+    return s && s.role === 'super_admin';
+}
+
+function requireAdmin() {
+    const session = requireAuth();
+    if (!session) return null;
+    if (session.role !== 'admin' && session.role !== 'super_admin') {
+        window.location.replace('dashboard.html');
+        return null;
+    }
+    return session;
+}
+
+function requireSuperAdmin() {
+    const session = requireAuth();
+    if (!session) return null;
+    if (session.role !== 'super_admin') {
+        window.location.replace('dashboard.html');
+        return null;
+    }
+    return session;
+}
+
+function getRoleLabel(role) {
+    switch (role) {
+        case 'super_admin': return 'Super Admin';
+        case 'admin': return 'Administrator';
+        default: return 'Guru';
+    }
 }
 
 const SESSION_KEY = 'smpit_nmb_session';
@@ -70,16 +121,6 @@ function requireAuth(redirectUrl = 'index.html') {
     return session;
 }
 
-function requireAdmin() {
-    const session = requireAuth();
-    if (!session) return null;
-    if (session.role !== 'admin') {
-        window.location.replace('dashboard.html');
-        return null;
-    }
-    return session;
-}
-
 function logout() {
     clearSession();
     window.location.replace('index.html');
@@ -90,6 +131,12 @@ async function doLogin(username, password) {
     if (username.trim() === admin.username && password === admin.password) {
         setSession({ username: admin.username, name: admin.name, role: 'admin' });
         return { success: true, role: 'admin' };
+    }
+
+    const superAdmin = _superAdminCred();
+    if (username.trim() === superAdmin.username && password === superAdmin.password) {
+        setSession({ username: superAdmin.username, name: superAdmin.name, role: 'super_admin' });
+        return { success: true, role: 'super_admin' };
     }
 
     // Teacher check (Firestore)
@@ -132,7 +179,7 @@ function initUserDisplay() {
     const sidebarAvatarEl = document.getElementById('sidebar-user-avatar');
 
     const initial = session.name.charAt(0).toUpperCase();
-    const roleLabel = session.role === 'admin' ? 'Administrator' : 'Guru';
+    const roleLabel = getRoleLabel(session.role);
 
     if (nameEl) nameEl.textContent = session.name;
     if (roleEl) roleEl.textContent = roleLabel;
@@ -140,9 +187,4 @@ function initUserDisplay() {
     if (sidebarNameEl) sidebarNameEl.textContent = session.name;
     if (sidebarRoleEl) sidebarRoleEl.textContent = roleLabel;
     if (sidebarAvatarEl) sidebarAvatarEl.textContent = initial;
-}
-
-function isAdmin() {
-    const s = getSession();
-    return s && s.role === 'admin';
 }

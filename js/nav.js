@@ -6,9 +6,10 @@ function renderNav(activePage) {
     const session = getSession();
     if (!session) return;
 
-    const admin = session.role === 'admin';
+    const admin = session.role === 'admin' || session.role === 'super_admin';
+    const superAdmin = session.role === 'super_admin';
     const initial = session.name.charAt(0).toUpperCase();
-    const roleLabel = admin ? 'Administrator' : 'Guru';
+    const roleLabel = getRoleLabel(session.role);
 
     const navItems = [
         { page: 'dashboard', href: 'dashboard.html', icon: '📊', label: 'Dashboard', adminOnly: false },
@@ -22,11 +23,15 @@ function renderNav(activePage) {
 
     const adminItems = [
         { page: 'laporan', href: 'laporan.html', icon: '📋', label: 'Laporan', adminOnly: true },
-        { page: 'pengaturan', href: 'pengaturan.html', icon: '⚙️', label: 'Pengaturan', adminOnly: true },
+    ];
+
+    const superAdminItems = [
+        { page: 'pengaturan', href: 'pengaturan.html', icon: '⚙️', label: 'Pengaturan', superAdminOnly: true },
     ];
 
     function buildItem(item) {
         if (item.adminOnly && !admin) return '';
+        if (item.superAdminOnly && !superAdmin) return '';
         const active = activePage === item.page ? 'active' : '';
         return `
             <a href="${item.href}" class="nav-item ${active}">
@@ -55,6 +60,7 @@ function renderNav(activePage) {
                 ${admin ? `
                 <div class="nav-section-label">Administrasi</div>
                 ${adminItems.map(buildItem).join('')}
+                ${superAdmin ? superAdminItems.map(buildItem).join('') : ''}
                 ` : ''}
             </nav>
 
