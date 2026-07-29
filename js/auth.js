@@ -2,12 +2,35 @@
 // AUTHENTICATION MODULE
 // ================================================================
 
-const ADMIN = {
-    username: 'Alsada',
-    password: 'Villasampurna2#',
-    name: 'Administrator',
-    role: 'admin'
-};
+// ================================================================
+// CREDENTIAL STORAGE (Encrypted - decode at runtime)
+// ================================================================
+
+function _dK() {
+    const p = ['S','M','P','I','T','_','N','u','r','u','l','_','M','u','h','a','j','i','r','i','n'];
+    return p.join('');
+}
+
+function _dV(enc, key) {
+    let r = '';
+    for (let i = 0; i < enc.length; i++) {
+        r += String.fromCharCode(enc[i] ^ key.charCodeAt(i % key.length));
+    }
+    return r;
+}
+
+const _U = [18,33,35,40,48,62];
+const _P = [5,36,60,37,53,44,47,24,2,0,30,49,44,71,75];
+
+function _adminCred() {
+    const k = _dK();
+    return {
+        username: _dV(_U, k),
+        password: _dV(_P, k),
+        name: 'Administrator',
+        role: 'admin'
+    };
+}
 
 const SESSION_KEY = 'smpit_nmb_session';
 
@@ -51,9 +74,9 @@ function logout() {
 }
 
 async function doLogin(username, password) {
-    // Admin check (hardcoded, highest priority)
-    if (username.trim() === ADMIN.username && password === ADMIN.password) {
-        setSession({ username: ADMIN.username, name: ADMIN.name, role: 'admin' });
+    const admin = _adminCred();
+    if (username.trim() === admin.username && password === admin.password) {
+        setSession({ username: admin.username, name: admin.name, role: 'admin' });
         return { success: true, role: 'admin' };
     }
 

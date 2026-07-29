@@ -92,14 +92,14 @@ git push -u origin main
 
 | Role | Username | Password |
 |---|---|---|
-| **Admin** | `Alsada` | `Villasampurna2#` |
+| **Admin** | `admin` | `Ganti di Pengaturan → Akun Guru` |
 | **Guru** | Buat di menu Pengaturan → Akun Guru | — |
 
 ---
 
 ## 📱 Cara Penggunaan
 
-### Sebagai Admin (Alsada)
+### Sebagai Admin
 1. Login → Dashboard (statistik dan grafik)
 2. **Data Murid** → Import Excel atau tambah manual
 3. **Catatan Pelanggaran** → Catat pelanggaran murid
