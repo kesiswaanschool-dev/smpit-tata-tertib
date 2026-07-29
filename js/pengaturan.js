@@ -169,7 +169,6 @@ async function saveAdminCreds(e) {
 
     localStorage.setItem('smpit_admin_creds', JSON.stringify({ _U: encUser, _P: encPass }));
 
-    localStorage.setItem('smpit_admin_creds', JSON.stringify({ _U: encUser, _P: encPass }));
     showToast('✅ Kredensial admin berhasil diperbarui! Silakan logout dan login ulang.', 'success');
     document.getElementById('admin-cred-form').reset();
 }
