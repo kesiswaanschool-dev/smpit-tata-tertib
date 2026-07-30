@@ -230,7 +230,7 @@ function renderReportTable() {
     const page = filteredReport.slice(start, start+RPT_SIZE);
 
     if (page.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state">
+        tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state">
             <div class="empty-icon">📋</div>
             <h3>Tidak ada data</h3>
             <p>Tidak ada murid yang cocok dengan filter</p>
@@ -261,7 +261,12 @@ function renderReportTable() {
                         <div class="point-bar-fill" style="width:${barPct}%;background:var(--primary-light)"></div>
                     </div>
                 </div>
-                ${sisaPrestasi > 0 ? `<div style="font-size:11px;color:var(--text-secondary);font-weight:600;margin-top:3px">⭐ Simpanan Prestasi: ${sisaPrestasi} poin</div>` : ''}
+            </td>
+            <td class="text-center">
+                ${sisaPrestasi > 0
+                    ? `<span style="font-weight:700;color:var(--green);font-size:14px">⭐ ${sisaPrestasi}</span>`
+                    : `<span class="td-muted">0</span>`
+                }
             </td>
         </tr>`;
     }).join('');
@@ -407,18 +412,20 @@ function renderClassChart() {
 function exportReport() {
     const range = getDateRange();
     const periodLabel = getPeriodLabel(range);
-    const data = filteredReport.map((r, i) => ({
-        'No': i+1,
-        'Nama Murid': r.nama,
-        'Kelas': r.kelas,
-        'Wali Kelas': r.waliKelas,
-        'Jumlah Pelanggaran': r.violCount,
-        'Poin Pelanggaran': r.violPoin,
-        'Poin Prestasi': r.achPoin,
-        'Saldo Poin': (r.achPoin > r.violPoin)
-            ? `0 (Simpanan Prestasi: ${r.achPoin - r.violPoin} poin)`
-            : r.netPoin
-    }));
+    const data = filteredReport.map((r, i) => {
+        const sisaPrestasi = Math.max(0, r.achPoin - r.violPoin);
+        return {
+            'No': i+1,
+            'Nama Murid': r.nama,
+            'Kelas': r.kelas,
+            'Wali Kelas': r.waliKelas,
+            'Jumlah Pelanggaran': r.violCount,
+            'Poin Pelanggaran': r.violPoin,
+            'Poin Prestasi': r.achPoin,
+            'Saldo Poin': r.netPoin,
+            'Simpanan Prestasi': sisaPrestasi > 0 ? sisaPrestasi : 0
+        };
+    });
     downloadExcel(data, `laporan_${periodLabel.replace(/\s+/g,'_')}_${today()}.xls`, 'Laporan');
     showToast(`Laporan ${data.length} murid berhasil diexport (.xls)`, 'success');
 }
