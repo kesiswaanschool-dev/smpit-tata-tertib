@@ -169,7 +169,9 @@ async function generateReport() {
             violPoin: totalViolPoin,
             achPoin: totalAchPoin,
             netPoin,
-            status: getPointStatus(netPoin)
+            status: getPointStatus(netPoin),
+            guruPelanggaran: uniqueRecorders(sViol),
+            guruPrestasi: uniqueRecorders(sAch)
         };
     });
 
@@ -409,6 +411,12 @@ function renderClassChart() {
     });
 }
 
+// Daftar guru pencatat unik dari daftar catatan (pelanggaran/prestasi)
+function uniqueRecorders(items) {
+    const names = [...new Set(items.map(i => (i.recordedBy || '').trim()).filter(Boolean))];
+    return names.length > 0 ? names.join(', ') : '-';
+}
+
 function exportReport() {
     const range = getDateRange();
     const periodLabel = getPeriodLabel(range);
@@ -423,7 +431,9 @@ function exportReport() {
             'Poin Pelanggaran': r.violPoin,
             'Poin Prestasi': r.achPoin,
             'Saldo Poin': r.netPoin,
-            'Simpanan Prestasi': sisaPrestasi > 0 ? sisaPrestasi : 0
+            'Simpanan Prestasi': sisaPrestasi > 0 ? sisaPrestasi : 0,
+            'Guru Pencatat Pelanggaran': r.guruPelanggaran || '-',
+            'Guru Pencatat Prestasi': r.guruPrestasi || '-'
         };
     });
     downloadExcel(data, `laporan_${periodLabel.replace(/\s+/g,'_')}_${today()}.xls`, 'Laporan');
